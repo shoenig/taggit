@@ -1,11 +1,11 @@
 taggit
 ======
 
-[![Go Report Card](https://goreportcard.com/badge/oss.indeed.com/go/taggit)](https://goreportcard.com/report/oss.indeed.com/go/taggit)
-[![Build Status](https://travis-ci.org/modprox/taggit.svg?branch=master)](https://travis-ci.org/modprox/taggit) 
-[![GoDoc](https://godoc.org/oss.indeed.com/go/taggit?status.svg)](https://godoc.org/oss.indeed.com/go/taggit)
-[![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/modprox/taggit.svg)](OSSMETADATA)
-[![GitHub](https://img.shields.io/github/license/modprox/taggit.svg)](LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/gophers.dev/cmds/taggit)](https://goreportcard.com/report/gophers.dev/cmds/taggit)
+![example workflow](https://github.com/shoenig/taggit/actions/workflows/ci.yaml/badge.svg)
+[![GoDoc](https://godoc.org/gophers.dev/cmds/taggit?status.svg)](https://godoc.org/gophers.dev/cmds/taggit)
+[![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/taggit/taggit.svg)](OSSMETADATA)
+[![GitHub](https://img.shields.io/github/license/taggit/taggit.svg)](LICENSE)
 
 # Project Overview
 
@@ -13,10 +13,10 @@ Command `taggit` is a git repository workflow tool for publishing semver release
 
 # Getting Started
 
-The `oss.indeed.com/go/taggit` CLI tool can be installed by running:
+The `gophers.dev/cmds/taggit` CLI tool can be installed by running:
 
 ```bash
-$ go install oss.indeed.com/go/taggit@latest
+$ go install gophers.dev/cmds/taggit@latest
 ```
 
 Example usage:
@@ -193,17 +193,14 @@ PR and provide feedback.
 
 # Maintainers
 
-The `oss.indeed.com/go/taggit` module is maintained by Indeed Engineering.
+The `gophers.dev/cmds/taggit` module is maintained by Indeed Engineering.
 
 While we are always busy helping people get jobs, we will try to respond to
 GitHub issues, pull requests, and questions within a couple of business days.
 
-# Code of Conduct
-
-`oss.indeed.com/go/taggit` is governed by the [Contributer Covenant v1.4.1](CODE_OF_CONDUCT.md)
 
 For more information please contact opensource@indeed.com.
 
 # License
 
-The `oss.indeed.com/go/taggit` module is open source under the [BSD-3-Clause](LICENSE) license.
+The `gophers.dev/cmds/taggit` module is open source under the [BSD-3-Clause](LICENSE) license.
