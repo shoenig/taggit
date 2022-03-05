@@ -6,10 +6,9 @@ import (
 
 	"github.com/google/subcommands"
 	"gophers.dev/pkgs/semantic"
-	"oss.indeed.com/go/taggit/internal/cli"
-	"oss.indeed.com/go/taggit/internal/cli/output"
-	"oss.indeed.com/go/taggit/internal/publish"
-	"oss.indeed.com/go/taggit/internal/tags"
+	"gophers.dev/cmds/taggit/internal/cli"
+	"gophers.dev/cmds/taggit/internal/cli/output"
+	"gophers.dev/cmds/taggit/internal/tags"
 )
 
 const (
@@ -20,20 +19,18 @@ const (
 
 func NewZeroCmd(kit *Kit) subcommands.Command {
 	return &zeroCmd{
-		writer:       kit.writer,
-		tagLister:    kit.tagLister,
-		tagCreator:   kit.tagCreator,
-		tagPusher:    kit.tagPusher,
-		tagPublisher: kit.tagPublisher,
+		writer:     kit.writer,
+		tagLister:  kit.tagLister,
+		tagCreator: kit.tagCreator,
+		tagPusher:  kit.tagPusher,
 	}
 }
 
 type zeroCmd struct {
-	writer       output.Writer
-	tagLister    cli.TagLister
-	tagCreator   cli.TagCreator
-	tagPusher    cli.TagPusher
-	tagPublisher publish.Publisher
+	writer     output.Writer
+	tagLister  cli.TagLister
+	tagCreator cli.TagCreator
+	tagPusher  cli.TagPusher
 }
 
 func (zc *zeroCmd) Name() string {
@@ -80,10 +77,6 @@ func (zc *zeroCmd) execute() error {
 	}
 
 	if err := zc.tagPusher.PushTag(zero); err != nil {
-		return err
-	}
-
-	if err := zc.tagPublisher.Publish(zero); err != nil {
 		return err
 	}
 

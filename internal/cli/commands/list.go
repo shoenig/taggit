@@ -10,9 +10,9 @@ import (
 
 	"gophers.dev/pkgs/semantic"
 
-	"oss.indeed.com/go/taggit/internal/cli"
-	"oss.indeed.com/go/taggit/internal/cli/output"
-	"oss.indeed.com/go/taggit/internal/tags"
+	"gophers.dev/cmds/taggit/internal/cli"
+	"gophers.dev/cmds/taggit/internal/cli/output"
+	"gophers.dev/cmds/taggit/internal/tags"
 )
 
 const (

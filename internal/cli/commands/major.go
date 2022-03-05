@@ -5,10 +5,9 @@ import (
 	"flag"
 
 	"github.com/google/subcommands"
-	"oss.indeed.com/go/taggit/internal/cli"
-	"oss.indeed.com/go/taggit/internal/cli/output"
-	"oss.indeed.com/go/taggit/internal/publish"
-	"oss.indeed.com/go/taggit/internal/tags"
+	"gophers.dev/cmds/taggit/internal/cli"
+	"gophers.dev/cmds/taggit/internal/cli/output"
+	"gophers.dev/cmds/taggit/internal/tags"
 )
 
 const (
@@ -19,20 +18,18 @@ const (
 
 func NewMajorCmd(kit *Kit) subcommands.Command {
 	return &majorCmd{
-		writer:       kit.writer,
-		tagLister:    kit.tagLister,
-		tagCreator:   kit.tagCreator,
-		tagPusher:    kit.tagPusher,
-		tagPublisher: kit.tagPublisher,
+		writer:     kit.writer,
+		tagLister:  kit.tagLister,
+		tagCreator: kit.tagCreator,
+		tagPusher:  kit.tagPusher,
 	}
 }
 
 type majorCmd struct {
-	writer       output.Writer
-	tagLister    cli.TagLister
-	tagCreator   cli.TagCreator
-	tagPusher    cli.TagPusher
-	tagPublisher publish.Publisher
+	writer     output.Writer
+	tagLister  cli.TagLister
+	tagCreator cli.TagCreator
+	tagPusher  cli.TagPusher
 }
 
 func (mc *majorCmd) Name() string {
@@ -83,10 +80,6 @@ func (mc *majorCmd) execute(ext tags.Extensions) error {
 	}
 
 	if err := mc.tagPusher.PushTag(next); err != nil {
-		return err
-	}
-
-	if err := mc.tagPublisher.Publish(next); err != nil {
 		return err
 	}
 
