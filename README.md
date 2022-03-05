@@ -1,11 +1,11 @@
 taggit
 ======
 
+[![CI Status](https://github.com/shoenig/taggit/actions/workflows/ci.yaml/badge.svg)](https://github.com/shoenig/taggit/actions/workflows/ci.yaml)
 [![Go Report Card](https://goreportcard.com/badge/gophers.dev/cmds/taggit)](https://goreportcard.com/report/gophers.dev/cmds/taggit)
-![example workflow](https://github.com/shoenig/taggit/actions/workflows/ci.yaml/badge.svg)
 [![GoDoc](https://godoc.org/gophers.dev/cmds/taggit?status.svg)](https://godoc.org/gophers.dev/cmds/taggit)
-[![NetflixOSS Lifecycle](https://img.shields.io/osslifecycle/taggit/taggit.svg)](OSSMETADATA)
-[![GitHub](https://img.shields.io/github/license/taggit/taggit.svg)](LICENSE)
+[![Lifecycle](https://img.shields.io/osslifecycle/shoenig/taggit.svg)](OSSMETADATA)
+[![GitHub](https://img.shields.io/github/license/shoenig/taggit.svg)](LICENSE)
 
 # Project Overview
 
