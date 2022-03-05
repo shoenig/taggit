@@ -11,7 +11,7 @@ import (
 
 	"gophers.dev/pkgs/semantic"
 
-	"oss.indeed.com/go/taggit/internal/tags"
+	"gophers.dev/cmds/taggit/internal/tags"
 )
 
 func Test_MajorCmd_commandInfo(t *testing.T) {
@@ -50,7 +50,6 @@ func Test_MajorCmd_Execute_normal(t *testing.T) {
 	)
 	mocks.tagCreator.CreateTagMock.When(newTag).Then(nil)
 	mocks.tagPusher.PushTagMock.When(newTag).Then(nil)
-	mocks.tagPublisher.PublishMock.When(newTag).Then(nil)
 
 	majorCmd := NewMajorCmd(newKit(mocks))
 
@@ -134,38 +133,6 @@ func Test_MajorCmd_Execute_creatorErr(t *testing.T) {
 	).Return(
 		errors.New("some create error"),
 	)
-
-	majorCmd := NewMajorCmd(newKit(mocks))
-
-	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
-
-	status := majorCmd.Execute(ctx, fs)
-	r.Equal(subcommands.ExitFailure, status)
-	r.Equal("", mocks.stdout.String())
-	r.Equal(exp, mocks.stderr.String())
-}
-
-func Test_MajorCmd_Execute_publishErr(t *testing.T) {
-	exp := "taggit: failure: some publish error\n"
-
-	r := require.New(t)
-
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
-
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		tags.Taxonomy{
-			tags.NewTriple(1, 2, 3): {semantic.New(1, 2, 3)},
-		}, nil,
-	)
-	newTag := semantic.New(2, 0, 0)
-	mocks.tagCreator.CreateTagMock.Expect(newTag).Return(nil)
-	mocks.tagPusher.PushTagMock.When(newTag).Then(nil)
-	mocks.tagPublisher.PublishMock.Expect(
-		semantic.New(2, 0, 0),
-	).Return(errors.New("some publish error"))
 
 	majorCmd := NewMajorCmd(newKit(mocks))
 

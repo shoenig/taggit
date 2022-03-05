@@ -8,8 +8,8 @@ import (
 
 	"github.com/google/subcommands"
 	"github.com/stretchr/testify/require"
+	"gophers.dev/cmds/taggit/internal/tags"
 	"gophers.dev/pkgs/semantic"
-	"oss.indeed.com/go/taggit/internal/tags"
 )
 
 func Test_ZeroCmd_commandInfo(t *testing.T) {
@@ -45,7 +45,6 @@ func Test_ZeroCmd_Execute_normal(t *testing.T) {
 	)
 	mocks.tagCreator.CreateTagMock.When(zeroTag).Then(nil)
 	mocks.tagPusher.PushTagMock.When(zeroTag).Then(nil)
-	mocks.tagPublisher.PublishMock.When(zeroTag).Then(nil)
 
 	zeroCmd := NewZeroCmd(newKit(mocks))
 
@@ -133,34 +132,6 @@ func Test_ZeroCmd_Execute_creatorErr(t *testing.T) {
 	).Return(
 		errors.New("some create error"),
 	)
-
-	zeroCmd := NewZeroCmd(newKit(mocks))
-
-	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
-
-	status := zeroCmd.Execute(ctx, fs)
-	r.Equal(subcommands.ExitFailure, status)
-	r.Equal("", mocks.stdout.String())
-	r.Equal(exp, mocks.stderr.String())
-}
-
-func Test_ZeroCmd_Execute_publishErr(t *testing.T) {
-	exp := "taggit: failure: some publish error\n"
-
-	r := require.New(t)
-
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
-
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		nil, nil,
-	)
-	newTag := semantic.New(0, 0, 0)
-	mocks.tagCreator.CreateTagMock.Expect(newTag).Return(nil)
-	mocks.tagPusher.PushTagMock.Expect(newTag).Return(nil)
-	mocks.tagPublisher.PublishMock.Expect(newTag).Return(errors.New("some publish error"))
 
 	zeroCmd := NewZeroCmd(newKit(mocks))
 

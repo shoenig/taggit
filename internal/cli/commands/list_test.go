@@ -11,11 +11,11 @@ import (
 	"github.com/google/subcommands"
 	"github.com/stretchr/testify/require"
 
-	"oss.indeed.com/go/taggit/internal/tags"
+	"gophers.dev/cmds/taggit/internal/tags"
 )
 
 func newKit(mocks mocks) *Kit {
-	return NewKit(mocks.writer, mocks.tagLister, mocks.tagCreator, mocks.tagPusher, mocks.tagPublisher)
+	return NewKit(mocks.writer, mocks.tagLister, mocks.tagCreator, mocks.tagPusher)
 }
 
 func Test_ListCmd_commandInfo(t *testing.T) {
