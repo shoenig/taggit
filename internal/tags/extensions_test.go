@@ -15,5 +15,5 @@ func Test_ExtractExtensions(t *testing.T) {
 	require.NoError(t, err)
 
 	ext := ExtractExtensions(fs)
-	require.Equal(t, "abc123", ext.BuildMetadta)
+	require.Equal(t, "abc123", ext.BuildMetaData)
 }

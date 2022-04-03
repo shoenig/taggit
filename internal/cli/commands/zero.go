@@ -5,10 +5,10 @@ import (
 	"flag"
 
 	"github.com/google/subcommands"
-	"gophers.dev/pkgs/semantic"
 	"gophers.dev/cmds/taggit/internal/cli"
 	"gophers.dev/cmds/taggit/internal/cli/output"
 	"gophers.dev/cmds/taggit/internal/tags"
+	"gophers.dev/pkgs/semantic"
 )
 
 const (

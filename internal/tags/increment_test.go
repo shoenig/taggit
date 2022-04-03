@@ -30,7 +30,7 @@ func Test_HasPrevious(t *testing.T) {
 }
 
 func ext(pr, bm string) Extensions {
-	return Extensions{PreRelease: pr, BuildMetadta: bm}
+	return Extensions{PreRelease: pr, BuildMetaData: bm}
 }
 
 func Test_IncMajor(t *testing.T) {

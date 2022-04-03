@@ -8,7 +8,6 @@ import (
 
 	git5 "github.com/go-git/go-git/v5"
 	"github.com/google/subcommands"
-
 	"gophers.dev/cmds/taggit/internal/cli"
 	"gophers.dev/cmds/taggit/internal/cli/commands"
 	"gophers.dev/cmds/taggit/internal/cli/output"

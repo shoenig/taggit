@@ -8,8 +8,8 @@ import (
 // Extensions represent the two kinds of extra "labels" that can be attached to
 // a semantic version tag, described in https://semver.org/.
 type Extensions struct {
-	PreRelease   string
-	BuildMetadta string
+	PreRelease    string
+	BuildMetaData string
 }
 
 // ExtractExtensions will extract the pre-release and/or build-metadata information from
@@ -33,8 +33,8 @@ func ExtractExtensions(fs *flag.FlagSet) Extensions {
 	buildMetadata = fs.Lookup("meta").Value.String()
 
 	return Extensions{
-		PreRelease:   clean(preRelease),
-		BuildMetadta: clean(buildMetadata),
+		PreRelease:    clean(preRelease),
+		BuildMetaData: clean(buildMetadata),
 	}
 }
 

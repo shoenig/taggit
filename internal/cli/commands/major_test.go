@@ -8,10 +8,8 @@ import (
 
 	"github.com/google/subcommands"
 	"github.com/stretchr/testify/require"
-
-	"gophers.dev/pkgs/semantic"
-
 	"gophers.dev/cmds/taggit/internal/tags"
+	"gophers.dev/pkgs/semantic"
 )
 
 func Test_MajorCmd_commandInfo(t *testing.T) {

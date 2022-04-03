@@ -59,7 +59,7 @@ func (pc *patchCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{
 func (pc *patchCmd) execute(ext tags.Extensions) error {
 	pc.writer.Tracef(
 		"increment patch version, pre-release: %q, build-metadata: %q",
-		ext.PreRelease, ext.BuildMetadta,
+		ext.PreRelease, ext.BuildMetaData,
 	)
 
 	tax, err := pc.tagLister.ListRepoTags()

@@ -59,7 +59,7 @@ func (mc *minorCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{
 func (mc *minorCmd) execute(ext tags.Extensions) error {
 	mc.writer.Tracef(
 		"increment minor version, pre-release: %q, build-metadata: %q",
-		ext.PreRelease, ext.BuildMetadta,
+		ext.PreRelease, ext.BuildMetaData,
 	)
 
 	groups, err := mc.tagLister.ListRepoTags()

@@ -6,12 +6,10 @@ import (
 	"flag"
 	"testing"
 
-	"gophers.dev/pkgs/semantic"
-
 	"github.com/google/subcommands"
 	"github.com/stretchr/testify/require"
-
 	"gophers.dev/cmds/taggit/internal/tags"
+	"gophers.dev/pkgs/semantic"
 )
 
 func newKit(mocks mocks) *Kit {

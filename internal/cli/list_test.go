@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"gophers.dev/pkgs/semantic"
 	"gophers.dev/cmds/taggit/internal/tags"
+	"gophers.dev/pkgs/semantic"
 )
 
 func Test_TagLister_ListRepoTags_normal(t *testing.T) {

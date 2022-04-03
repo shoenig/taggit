@@ -19,7 +19,7 @@ func same(tag semantic.Tag, ext Extensions) semantic.Tag {
 		tag.Minor,
 		tag.Patch,
 		ext.PreRelease,
-		ext.BuildMetadta,
+		ext.BuildMetaData,
 	)
 }
 
@@ -34,7 +34,7 @@ func IncMajor(previous semantic.Tag, ext Extensions) semantic.Tag {
 		0,
 		0,
 		ext.PreRelease,
-		ext.BuildMetadta,
+		ext.BuildMetaData,
 	)
 }
 
@@ -49,7 +49,7 @@ func IncMinor(previous semantic.Tag, ext Extensions) semantic.Tag {
 		base.Minor+1,
 		0,
 		ext.PreRelease,
-		ext.BuildMetadta,
+		ext.BuildMetaData,
 	)
 }
 
@@ -64,6 +64,6 @@ func IncPatch(previous semantic.Tag, ext Extensions) semantic.Tag {
 		base.Minor,
 		base.Patch+1,
 		ext.PreRelease,
-		ext.BuildMetadta,
+		ext.BuildMetaData,
 	)
 }
