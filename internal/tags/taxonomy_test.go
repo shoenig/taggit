@@ -3,7 +3,7 @@ package tags
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 	"gophers.dev/pkgs/semantic"
 )
 
@@ -28,7 +28,7 @@ v1.1.1
 
 func Test_Taxonomy_Add(t *testing.T) {
 	tax := Taxonomy{
-		NewTriple(1, 2, 3): []semantic.Tag{
+		NewTriple(1, 2, 3): Tags{
 			semantic.New(1, 2, 3),
 		},
 	}
@@ -36,15 +36,15 @@ func Test_Taxonomy_Add(t *testing.T) {
 	tax.Add(semantic.New(1, 3, 0))
 
 	exp := Taxonomy{
-		NewTriple(1, 2, 3): []semantic.Tag{
+		NewTriple(1, 2, 3): Tags{
 			semantic.New(1, 2, 3),
 		},
-		NewTriple(1, 3, 0): []semantic.Tag{
+		NewTriple(1, 3, 0): Tags{
 			semantic.New(1, 3, 0),
 		},
 	}
 
-	require.Equal(t, exp, tax)
+	test.MapEquals(t, exp, tax)
 }
 
 func Test_Taxonomy_Sort(t *testing.T) {
@@ -74,7 +74,7 @@ func Test_Taxonomy_Sort(t *testing.T) {
 
 	orig.Sort() // in place
 
-	require.Equal(t, orig, exp)
+	test.MapEquals(t, exp, orig)
 }
 
 func Test_Taxonomy_Bases(t *testing.T) {
@@ -91,7 +91,7 @@ func Test_Taxonomy_Bases(t *testing.T) {
 	}
 
 	bases := orig.Bases()
-	require.Equal(t, []Triple{
+	test.EqSlice(t, []Triple{
 		NewTriple(1, 2, 3),
 		NewTriple(1, 3, 0),
 	}, bases)
@@ -111,5 +111,5 @@ func Test_Taxonomy_Latest(t *testing.T) {
 	}
 
 	latest := orig.Latest()
-	require.Equal(t, semantic.New(1, 3, 0), latest)
+	test.Eq(t, semantic.New(1, 3, 0), latest)
 }

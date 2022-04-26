@@ -3,7 +3,7 @@ package cli
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 	"gophers.dev/cmds/taggit/internal/tags"
 	"gophers.dev/pkgs/semantic"
 )
@@ -21,8 +21,8 @@ func Test_TagLister_ListRepoTags_normal(t *testing.T) {
 
 	lister := NewTagLister(repo)
 	tax, err := lister.ListRepoTags()
-	require.NoError(t, err)
-	require.Equal(t, tags.Taxonomy{
+	test.NoError(t, err)
+	test.MapEquals(t, tags.Taxonomy{
 		tags.NewTriple(0, 0, 1): []semantic.Tag{
 			semantic.New(0, 0, 1),
 		},

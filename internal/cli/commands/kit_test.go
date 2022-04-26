@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 	"gophers.dev/cmds/taggit/internal/cli"
 	"gophers.dev/cmds/taggit/internal/cli/output"
 )
@@ -44,9 +44,8 @@ func Test_NewKit(t *testing.T) {
 	mocks := newMocks(t)
 	kit := NewKit(mocks.writer, mocks.tagLister, mocks.tagCreator, mocks.tagPusher)
 
-	r := require.New(t)
-	r.NotNil(t, kit.writer)
-	r.NotNil(t, kit.tagLister)
-	r.NotNil(t, kit.tagCreator)
-	r.NotNil(t, kit.tagPusher)
+	test.NotNil(t, kit.writer)
+	test.NotNil(t, kit.tagLister)
+	test.NotNil(t, kit.tagCreator)
+	test.NotNil(t, kit.tagPusher)
 }

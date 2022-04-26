@@ -3,7 +3,7 @@ package cli
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 	"gophers.dev/pkgs/semantic"
 )
 
@@ -16,5 +16,5 @@ func Test_TagPusher_PushTag(t *testing.T) {
 
 	pusher := NewTagPusher(repo)
 	err := pusher.PushTag(semantic.New(0, 0, 3))
-	require.NoError(t, err)
+	test.NoError(t, err)
 }

@@ -7,33 +7,29 @@ import (
 	"testing"
 
 	"github.com/google/subcommands"
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 	"gophers.dev/cmds/taggit/internal/tags"
 	"gophers.dev/pkgs/semantic"
 )
 
 func Test_MinorCmd_commandInfo(t *testing.T) {
-	r := require.New(t)
-
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
 
 	majorCmd := NewMinorCmd(newKit(mocks))
 
 	name := majorCmd.Name()
-	r.Equal(minorCmdName, name)
+	test.Eq(t, minorCmdName, name)
 
 	synop := majorCmd.Synopsis()
-	r.Equal(minorCmdSynopsis, synop)
+	test.Eq(t, minorCmdSynopsis, synop)
 
 	usage := majorCmd.Usage()
-	r.Equal(minorCmdUsage, usage)
+	test.Eq(t, minorCmdUsage, usage)
 }
 
 func Test_MinorCmd_Execute_normal(t *testing.T) {
 	exp := "taggit: created tag v1.3.0\n"
-
-	r := require.New(t)
 
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
@@ -57,17 +53,15 @@ func Test_MinorCmd_Execute_normal(t *testing.T) {
 
 	status := minorCmd.Execute(ctx, fs)
 
-	r.Equal(subcommands.ExitSuccess, status)
-	r.Equal(exp, mocks.stdout.String())
-	r.Equal("", mocks.stderr.String())
+	test.Eq(t, subcommands.ExitSuccess, status)
+	test.Eq(t, exp, mocks.stdout.String())
+	test.Eq(t, "", mocks.stderr.String())
 }
 
 func Test_MinorCmd_Execute_noPrevious(t *testing.T) {
 	exp := `taggit: cannot increment tag because no previous tags exist
 taggit: failure: no previous tags
 `
-
-	r := require.New(t)
 
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
@@ -83,15 +77,13 @@ taggit: failure: no previous tags
 	_ = fs.String("meta", "", "usage")
 
 	status := minorCmd.Execute(ctx, fs)
-	r.Equal(subcommands.ExitFailure, status)
-	r.Equal("", mocks.stdout.String())
-	r.Equal(exp, mocks.stderr.String())
+	test.Eq(t, subcommands.ExitFailure, status)
+	test.Eq(t, "", mocks.stdout.String())
+	test.Eq(t, exp, mocks.stderr.String())
 }
 
 func Test_MinorCmd_Execute_listErr(t *testing.T) {
 	exp := "taggit: failure: some git error\n"
-
-	r := require.New(t)
 
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
@@ -107,15 +99,13 @@ func Test_MinorCmd_Execute_listErr(t *testing.T) {
 	_ = fs.String("meta", "", "usage")
 
 	status := minorCmd.Execute(ctx, fs)
-	r.Equal(subcommands.ExitFailure, status)
-	r.Equal("", mocks.stdout.String())
-	r.Equal(exp, mocks.stderr.String())
+	test.Eq(t, subcommands.ExitFailure, status)
+	test.Eq(t, "", mocks.stdout.String())
+	test.Eq(t, exp, mocks.stderr.String())
 }
 
 func Test_MinorCmd_Execute_creatorErr(t *testing.T) {
 	exp := "taggit: failure: some create error\n"
-
-	r := require.New(t)
 
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
@@ -139,7 +129,7 @@ func Test_MinorCmd_Execute_creatorErr(t *testing.T) {
 	_ = fs.String("meta", "", "usage")
 
 	status := minorCmd.Execute(ctx, fs)
-	r.Equal(subcommands.ExitFailure, status)
-	r.Equal("", mocks.stdout.String())
-	r.Equal(exp, mocks.stderr.String())
+	test.Eq(t, subcommands.ExitFailure, status)
+	test.Eq(t, "", mocks.stdout.String())
+	test.Eq(t, exp, mocks.stderr.String())
 }

@@ -3,7 +3,7 @@ package tags
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 	"gophers.dev/pkgs/semantic"
 )
 
@@ -12,7 +12,7 @@ func Test_HasPrevious(t *testing.T) {
 
 	try := func(t *testing.T, taxonomy Taxonomy, exp bool) {
 		result := HasPrevious(taxonomy)
-		require.Equal(t, exp, result)
+		test.Eq(t, exp, result)
 	}
 
 	t.Run("one existing tag", func(t *testing.T) {
@@ -38,7 +38,7 @@ func Test_IncMajor(t *testing.T) {
 
 	try := func(t *testing.T, ext Extensions, previous, exp semantic.Tag) {
 		next := IncMajor(previous, ext)
-		require.Equal(t, exp, next)
+		test.Eq(t, exp, next)
 	}
 
 	// test the 2x2 matrix of pre-release presence
@@ -103,7 +103,7 @@ func Test_IncMinor(t *testing.T) {
 
 	try := func(t *testing.T, ext Extensions, previous, exp semantic.Tag) {
 		next := IncMinor(previous, ext)
-		require.Equal(t, exp, next)
+		test.Eq(t, exp, next)
 	}
 
 	// test the 2x2 matrix of pre-release presence
@@ -168,7 +168,7 @@ func Test_IncPatch(t *testing.T) {
 
 	try := func(t *testing.T, ext Extensions, previous, exp semantic.Tag) {
 		next := IncPatch(previous, ext)
-		require.Equal(t, exp, next)
+		test.Eq(t, exp, next)
 	}
 
 	// test the 2x2 matrix of pre-release presence
