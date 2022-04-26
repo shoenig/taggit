@@ -1,7 +1,7 @@
 taggit
 ======
 
-[![CI Status](https://github.com/shoenig/taggit/actions/workflows/ci.yaml/badge.svg)](https://github.com/shoenig/taggit/actions/workflows/ci.yaml)
+[![Run CI Tests](https://github.com/shoenig/taggit/actions/workflows/ci.yaml/badge.svg)](https://github.com/shoenig/taggit/actions/workflows/ci.yaml)
 [![Go Report Card](https://goreportcard.com/badge/gophers.dev/cmds/taggit)](https://goreportcard.com/report/gophers.dev/cmds/taggit)
 [![GoDoc](https://godoc.org/gophers.dev/cmds/taggit?status.svg)](https://godoc.org/gophers.dev/cmds/taggit)
 [![Lifecycle](https://img.shields.io/osslifecycle/shoenig/taggit.svg)](OSSMETADATA)
