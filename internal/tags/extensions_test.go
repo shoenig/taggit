@@ -4,7 +4,7 @@ import (
 	"flag"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 )
 
 func Test_ExtractExtensions(t *testing.T) {
@@ -12,8 +12,8 @@ func Test_ExtractExtensions(t *testing.T) {
 	fs.String("meta", "bm1", "set metadata")
 
 	err := fs.Set("meta", "abc123")
-	require.NoError(t, err)
+	test.NoError(t, err)
 
 	ext := ExtractExtensions(fs)
-	require.Equal(t, "abc123", ext.BuildMetaData)
+	test.Eq(t, "abc123", ext.BuildMetaData)
 }

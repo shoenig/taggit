@@ -3,10 +3,17 @@ package tags
 import (
 	"sort"
 
+	"golang.org/x/exp/slices"
 	"gophers.dev/pkgs/semantic"
 )
 
-type Taxonomy map[Triple][]semantic.Tag
+type Tags []semantic.Tag
+
+func (t Tags) Equals(o Tags) bool {
+	return slices.Equal(t, o)
+}
+
+type Taxonomy map[Triple]Tags
 
 func (t Taxonomy) Add(tag semantic.Tag) {
 	base := tag.Base()

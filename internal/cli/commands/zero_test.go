@@ -4,36 +4,33 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"strings"
 	"testing"
 
 	"github.com/google/subcommands"
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 	"gophers.dev/cmds/taggit/internal/tags"
 	"gophers.dev/pkgs/semantic"
 )
 
 func Test_ZeroCmd_commandInfo(t *testing.T) {
-	r := require.New(t)
-
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
 
 	majorCmd := NewZeroCmd(newKit(mocks))
 
 	name := majorCmd.Name()
-	r.Equal(zeroCmdName, name)
+	test.Eq(t, zeroCmdName, name)
 
 	synop := majorCmd.Synopsis()
-	r.Equal(zeroCmdSynopsis, synop)
+	test.Eq(t, zeroCmdSynopsis, synop)
 
 	usage := majorCmd.Usage()
-	r.Equal(zeroCmdUsage, usage)
+	test.Eq(t, zeroCmdUsage, usage)
 }
 
 func Test_ZeroCmd_Execute_normal(t *testing.T) {
 	exp := "taggit: created tag v0.0.0\n"
-
-	r := require.New(t)
 
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
@@ -54,15 +51,13 @@ func Test_ZeroCmd_Execute_normal(t *testing.T) {
 
 	status := zeroCmd.Execute(ctx, fs)
 
-	r.Equal(subcommands.ExitSuccess, status)
-	r.Equal(exp, mocks.stdout.String())
-	r.Equal("", mocks.stderr.String())
+	test.Eq(t, subcommands.ExitSuccess, status)
+	test.Eq(t, exp, mocks.stdout.String())
+	test.Eq(t, "", mocks.stderr.String())
 }
 
 func Test_ZeroCmd_Execute_hasPrevious(t *testing.T) {
 	exp := "refusing to generate zero tag (v0.0.0) when other semver tags already exist\n"
-
-	r := require.New(t)
 
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
@@ -86,15 +81,13 @@ func Test_ZeroCmd_Execute_hasPrevious(t *testing.T) {
 
 	status := zeroCmd.Execute(ctx, fs)
 
-	r.Equal(subcommands.ExitFailure, status)
-	r.Equal("", mocks.stdout.String())
-	r.Contains(mocks.stderr.String(), exp)
+	test.Eq(t, subcommands.ExitFailure, status)
+	test.Eq(t, "", mocks.stdout.String())
+	test.True(t, strings.Contains(mocks.stderr.String(), exp))
 }
 
 func Test_ZeroCmd_Execute_listErr(t *testing.T) {
 	exp := "taggit: failure: some git error\n"
-
-	r := require.New(t)
 
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
@@ -110,15 +103,13 @@ func Test_ZeroCmd_Execute_listErr(t *testing.T) {
 	_ = fs.String("meta", "", "usage")
 
 	status := zeroCmd.Execute(ctx, fs)
-	r.Equal(subcommands.ExitFailure, status)
-	r.Equal("", mocks.stdout.String())
-	r.Equal(exp, mocks.stderr.String())
+	test.Eq(t, subcommands.ExitFailure, status)
+	test.Eq(t, "", mocks.stdout.String())
+	test.Eq(t, exp, mocks.stderr.String())
 }
 
 func Test_ZeroCmd_Execute_creatorErr(t *testing.T) {
 	exp := "taggit: failure: some create error\n"
-
-	r := require.New(t)
 
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
@@ -140,7 +131,7 @@ func Test_ZeroCmd_Execute_creatorErr(t *testing.T) {
 	_ = fs.String("meta", "", "usage")
 
 	status := zeroCmd.Execute(ctx, fs)
-	r.Equal(subcommands.ExitFailure, status)
-	r.Equal("", mocks.stdout.String())
-	r.Equal(exp, mocks.stderr.String())
+	test.Eq(t, subcommands.ExitFailure, status)
+	test.Eq(t, "", mocks.stdout.String())
+	test.Eq(t, exp, mocks.stderr.String())
 }

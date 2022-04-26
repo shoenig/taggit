@@ -3,7 +3,7 @@ package cli
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 	"gophers.dev/pkgs/semantic"
 )
 
@@ -20,5 +20,5 @@ func Test_TagCreator_CreateTag(t *testing.T) {
 		Minor: 0,
 		Patch: 3,
 	})
-	require.NoError(t, err)
+	test.NoError(t, err)
 }

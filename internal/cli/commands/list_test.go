@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/google/subcommands"
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 	"gophers.dev/cmds/taggit/internal/tags"
 	"gophers.dev/pkgs/semantic"
 )
@@ -17,26 +17,22 @@ func newKit(mocks mocks) *Kit {
 }
 
 func Test_ListCmd_commandInfo(t *testing.T) {
-	r := require.New(t)
-
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
 
 	listCmd := NewListCmd(newKit(mocks))
 
 	name := listCmd.Name()
-	r.Equal(listCmdName, name)
+	test.Eq(t, listCmdName, name)
 
 	synop := listCmd.Synopsis()
-	r.Equal(listCmdSynopsis, synop)
+	test.Eq(t, listCmdSynopsis, synop)
 
 	usage := listCmd.Usage()
-	r.Equal(listCmdUsage, usage)
+	test.Eq(t, listCmdUsage, usage)
 }
 
 func Test_ListCmd_Execute_noTags(t *testing.T) {
-	r := require.New(t)
-
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
 
@@ -51,15 +47,13 @@ func Test_ListCmd_Execute_noTags(t *testing.T) {
 	fs := flag.NewFlagSet("test", flag.PanicOnError)
 	status := listCmd.Execute(ctx, fs)
 
-	r.Equal(subcommands.ExitSuccess, status)
+	test.Eq(t, subcommands.ExitSuccess, status)
 }
 
 func Test_ListCmd_Execute_someTags(t *testing.T) {
 	exp := `v0.1.0 |= v0.1.0 v0.1.0-alpha1
 v0.2.0 |= v0.2.0-rc1 v0.2.0-r1+linux v0.2.0-r1+darwin
 `
-	r := require.New(t)
-
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
 
@@ -84,15 +78,13 @@ v0.2.0 |= v0.2.0-rc1 v0.2.0-r1+linux v0.2.0-r1+darwin
 	fs := flag.NewFlagSet("test", flag.PanicOnError)
 	status := listCmd.Execute(ctx, fs)
 
-	r.Equal(subcommands.ExitSuccess, status)
-	r.Equal(exp, mocks.stdout.String())
-	r.Equal("", mocks.stderr.String())
+	test.Eq(t, subcommands.ExitSuccess, status)
+	test.Eq(t, exp, mocks.stdout.String())
+	test.Eq(t, "", mocks.stderr.String())
 }
 
 func Test_ListCmd_Execute_listErr(t *testing.T) {
 	exp := "taggit: failure: some git error\n"
-
-	r := require.New(t)
 
 	mocks := newMocks(t)
 	defer mocks.assertions(t)
@@ -107,7 +99,7 @@ func Test_ListCmd_Execute_listErr(t *testing.T) {
 	fs := flag.NewFlagSet("test", flag.PanicOnError)
 	status := listCmd.Execute(ctx, fs)
 
-	r.Equal(subcommands.ExitFailure, status)
-	r.Equal("", mocks.stdout.String())
-	r.Equal(exp, mocks.stderr.String())
+	test.Eq(t, subcommands.ExitFailure, status)
+	test.Eq(t, "", mocks.stdout.String())
+	test.Eq(t, exp, mocks.stderr.String())
 }

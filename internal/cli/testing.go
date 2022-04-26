@@ -9,7 +9,7 @@ import (
 
 	git5 "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
-	"github.com/stretchr/testify/require"
+	"github.com/shoenig/test"
 )
 
 var signature = &object.Signature{
@@ -20,31 +20,31 @@ var signature = &object.Signature{
 
 func CleanupT(t *testing.T, r *git5.Repository) {
 	w, err := r.Worktree()
-	require.NoError(t, err)
+	test.NoError(t, err)
 	root := w.Filesystem.Root()
 
 	err = os.RemoveAll(root)
-	require.NoError(t, err)
+	test.NoError(t, err)
 }
 
 func CreateT(t *testing.T, tags []string) *git5.Repository {
 	dir, err := ioutil.TempDir("", "taggit-")
-	require.NoError(t, err)
+	test.NoError(t, err)
 
 	r, err := git5.PlainInit(dir, false)
-	require.NoError(t, err)
+	test.NoError(t, err)
 
 	w, err := r.Worktree()
-	require.NoError(t, err)
+	test.NoError(t, err)
 
 	for i, tag := range tags {
 		msg := fmt.Sprintf("commit #%d", i)
 		h, err := w.Commit(msg, &git5.CommitOptions{
 			Author: signature,
 		})
-		require.NoError(t, err)
+		test.NoError(t, err)
 		_, err = r.CreateTag(tag, h, nil)
-		require.NoError(t, err)
+		test.NoError(t, err)
 	}
 
 	return r
