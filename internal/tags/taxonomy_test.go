@@ -91,7 +91,7 @@ func Test_Taxonomy_Bases(t *testing.T) {
 	}
 
 	bases := orig.Bases()
-	test.EqSlice(t, []Triple{
+	test.EqualsSlice(t, []Triple{
 		NewTriple(1, 2, 3),
 		NewTriple(1, 3, 0),
 	}, bases)

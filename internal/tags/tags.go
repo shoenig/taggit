@@ -34,6 +34,10 @@ func (t Triple) Patch() int {
 	return t.patch
 }
 
+func (t Triple) Equals(o Triple) bool {
+	return t.major == o.major && t.minor == o.minor && t.patch == o.patch
+}
+
 func (t Triple) String() string {
 	return semantic.New(
 		t.Major(),
