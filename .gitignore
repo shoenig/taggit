@@ -13,3 +13,6 @@
 
 *~
 taggit
+
+# goreleaser
+dist/
