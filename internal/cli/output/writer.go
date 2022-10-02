@@ -28,7 +28,7 @@ func enableTraces(env string) bool {
 
 // NewWriter creates a new Writer with the given output sinks. Typically one
 // would plug normal into os.Stdout and failure into os.Stderr, but other
-// outputs may be provided, for example in use of must.cases.
+// outputs may be provided, for example in use of test cases.
 //
 // Setting the TAGGIT_ENABLE_TRACES environment variable to 'true' will turn on
 // highly verbose trace statements, useful for debugging while doing development

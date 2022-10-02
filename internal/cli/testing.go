@@ -14,7 +14,7 @@ import (
 
 var signature = &object.Signature{
 	Name:  "Testing",
-	Email: "must.ng@example.com",
+	Email: "testing@example.com",
 	When:  time.Date(2020, 11, 8, 14, 18, 0, 0, time.UTC),
 }
 
