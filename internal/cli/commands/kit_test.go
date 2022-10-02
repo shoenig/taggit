@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/shoenig/test"
-	"gophers.dev/cmds/taggit/internal/cli"
-	"gophers.dev/cmds/taggit/internal/cli/output"
+	"github.com/shoenig/taggit/internal/cli"
+	"github.com/shoenig/taggit/internal/cli/output"
+	"github.com/shoenig/test/must"
 )
 
 type mocks struct {
@@ -44,8 +44,8 @@ func Test_NewKit(t *testing.T) {
 	mocks := newMocks(t)
 	kit := NewKit(mocks.writer, mocks.tagLister, mocks.tagCreator, mocks.tagPusher)
 
-	test.NotNil(t, kit.writer)
-	test.NotNil(t, kit.tagLister)
-	test.NotNil(t, kit.tagCreator)
-	test.NotNil(t, kit.tagPusher)
+	must.NotNil(t, kit.writer)
+	must.NotNil(t, kit.tagLister)
+	must.NotNil(t, kit.tagCreator)
+	must.NotNil(t, kit.tagPusher)
 }

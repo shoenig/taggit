@@ -3,9 +3,9 @@ package cli
 import (
 	"testing"
 
-	"github.com/shoenig/test"
-	"gophers.dev/cmds/taggit/internal/tags"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
+	"github.com/shoenig/taggit/internal/tags"
+	"github.com/shoenig/test/must"
 )
 
 func Test_TagLister_ListRepoTags_normal(t *testing.T) {
@@ -21,8 +21,8 @@ func Test_TagLister_ListRepoTags_normal(t *testing.T) {
 
 	lister := NewTagLister(repo)
 	tax, err := lister.ListRepoTags()
-	test.NoError(t, err)
-	test.MapEquals(t, tags.Taxonomy{
+	must.NoError(t, err)
+	must.MapEq(t, tags.Taxonomy{
 		tags.NewTriple(0, 0, 1): []semantic.Tag{
 			semantic.New(0, 0, 1),
 		},

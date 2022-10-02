@@ -8,7 +8,7 @@ import (
 	mm_time "time"
 
 	"github.com/gojuno/minimock/v3"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
 )
 
 // TagPusherMock implements TagPusher

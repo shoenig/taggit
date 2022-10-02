@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/google/subcommands"
-	"github.com/shoenig/test"
-	"gophers.dev/cmds/taggit/internal/tags"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
+	"github.com/shoenig/taggit/internal/tags"
+	"github.com/shoenig/test/must"
 )
 
 func Test_PatchCmd_commandInfo(t *testing.T) {
@@ -19,13 +19,13 @@ func Test_PatchCmd_commandInfo(t *testing.T) {
 	patchCmd := NewPatchCmd(newKit(mocks))
 
 	name := patchCmd.Name()
-	test.Eq(t, patchCmdName, name)
+	must.Eq(t, patchCmdName, name)
 
 	synop := patchCmd.Synopsis()
-	test.Eq(t, patchCmdSynopsis, synop)
+	must.Eq(t, patchCmdSynopsis, synop)
 
 	usage := patchCmd.Usage()
-	test.Eq(t, patchCmdUsage, usage)
+	must.Eq(t, patchCmdUsage, usage)
 }
 
 func Test_PatchCmd_Execute_normal(t *testing.T) {
@@ -47,14 +47,14 @@ func Test_PatchCmd_Execute_normal(t *testing.T) {
 	patchCmd := NewPatchCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := patchCmd.Execute(ctx, fs)
 
-	test.Eq(t, subcommands.ExitSuccess, status)
-	test.Eq(t, exp, mocks.stdout.String())
-	test.Eq(t, "", mocks.stderr.String())
+	must.Eq(t, subcommands.ExitSuccess, status)
+	must.Eq(t, exp, mocks.stdout.String())
+	must.Eq(t, "", mocks.stderr.String())
 }
 
 func Test_PatchCmd_Execute_noPrevious(t *testing.T) {
@@ -72,13 +72,13 @@ taggit: failure: no previous tags
 	patchCmd := NewPatchCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := patchCmd.Execute(ctx, fs)
-	test.Eq(t, subcommands.ExitFailure, status)
-	test.Eq(t, "", mocks.stdout.String())
-	test.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, subcommands.ExitFailure, status)
+	must.Eq(t, "", mocks.stdout.String())
+	must.Eq(t, exp, mocks.stderr.String())
 }
 
 func Test_PatchCmd_Execute_listErr(t *testing.T) {
@@ -94,13 +94,13 @@ func Test_PatchCmd_Execute_listErr(t *testing.T) {
 	patchCmd := NewPatchCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := patchCmd.Execute(ctx, fs)
-	test.Eq(t, subcommands.ExitFailure, status)
-	test.Eq(t, "", mocks.stdout.String())
-	test.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, subcommands.ExitFailure, status)
+	must.Eq(t, "", mocks.stdout.String())
+	must.Eq(t, exp, mocks.stderr.String())
 }
 
 func Test_PatchCmd_Execute_creatorErr(t *testing.T) {
@@ -124,11 +124,11 @@ func Test_PatchCmd_Execute_creatorErr(t *testing.T) {
 	patchCmd := NewPatchCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := patchCmd.Execute(ctx, fs)
-	test.Eq(t, subcommands.ExitFailure, status)
-	test.Eq(t, "", mocks.stdout.String())
-	test.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, subcommands.ExitFailure, status)
+	must.Eq(t, "", mocks.stdout.String())
+	must.Eq(t, exp, mocks.stderr.String())
 }

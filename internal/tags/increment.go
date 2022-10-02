@@ -1,7 +1,7 @@
 package tags
 
 import (
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
 )
 
 func HasPrevious(tax Taxonomy) bool {

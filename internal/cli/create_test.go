@@ -3,8 +3,8 @@ package cli
 import (
 	"testing"
 
-	"github.com/shoenig/test"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
+	"github.com/shoenig/test/must"
 )
 
 func Test_TagCreator_CreateTag(t *testing.T) {
@@ -20,5 +20,5 @@ func Test_TagCreator_CreateTag(t *testing.T) {
 		Minor: 0,
 		Patch: 3,
 	})
-	test.NoError(t, err)
+	must.NoError(t, err)
 }

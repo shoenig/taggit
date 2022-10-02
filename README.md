@@ -2,9 +2,6 @@ taggit
 ======
 
 [![Run CI Tests](https://github.com/shoenig/taggit/actions/workflows/ci.yaml/badge.svg)](https://github.com/shoenig/taggit/actions/workflows/ci.yaml)
-[![Go Report Card](https://goreportcard.com/badge/gophers.dev/cmds/taggit)](https://goreportcard.com/report/gophers.dev/cmds/taggit)
-[![GoDoc](https://godoc.org/gophers.dev/cmds/taggit?status.svg)](https://godoc.org/gophers.dev/cmds/taggit)
-[![Lifecycle](https://img.shields.io/osslifecycle/shoenig/taggit.svg)](OSSMETADATA)
 [![GitHub](https://img.shields.io/github/license/shoenig/taggit.svg)](LICENSE)
 
 # Project Overview
@@ -13,10 +10,10 @@ Command `taggit` is a git repository workflow tool for publishing semver release
 
 # Getting Started
 
-The `gophers.dev/cmds/taggit` CLI tool can be installed by running:
+The `github.com/shoenig/taggit` CLI tool can be installed by running:
 
 ```bash
-$ go install gophers.dev/cmds/taggit@latest
+$ go install github.com/shoenig/taggit@latest
 ```
 
 Example usage:
@@ -171,9 +168,6 @@ taggit: created tag: v2.0.0
 
 For technical questions about `taggit`, just file an issue in the GitHub tracker.
 
-For questions about Open Source in Indeed Engineering, send us an email at
-opensource@indeed.com
-
 # Contributing
 
 We welcome contributions! Feel free to help make `taggit` better.
@@ -193,7 +187,7 @@ PR and provide feedback.
 
 # Maintainers
 
-The `gophers.dev/cmds/taggit` module is maintained by Indeed Engineering.
+The `github.com/shoenig/taggit` module is maintained by Indeed Engineering.
 
 While we are always busy helping people get jobs, we will try to respond to
 GitHub issues, pull requests, and questions within a couple of business days.
@@ -203,4 +197,4 @@ For more information please contact opensource@indeed.com.
 
 # License
 
-The `gophers.dev/cmds/taggit` module is open source under the [BSD-3-Clause](LICENSE) license.
+The `github.com/shoenig/taggit` module is open source under the [BSD-3-Clause](LICENSE) license.

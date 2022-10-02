@@ -7,7 +7,7 @@ import (
 	mm_time "time"
 
 	"github.com/gojuno/minimock/v3"
-	"gophers.dev/cmds/taggit/internal/tags"
+	"github.com/shoenig/taggit/internal/tags"
 )
 
 // TagListerMock implements TagLister
