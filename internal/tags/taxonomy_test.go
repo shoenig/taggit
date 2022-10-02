@@ -3,8 +3,8 @@ package tags
 import (
 	"testing"
 
-	"github.com/shoenig/test"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
+	"github.com/shoenig/test/must"
 )
 
 const sampleTags = `
@@ -44,7 +44,7 @@ func Test_Taxonomy_Add(t *testing.T) {
 		},
 	}
 
-	test.MapEquals(t, exp, tax)
+	must.MapEq(t, exp, tax)
 }
 
 func Test_Taxonomy_Sort(t *testing.T) {
@@ -74,7 +74,7 @@ func Test_Taxonomy_Sort(t *testing.T) {
 
 	orig.Sort() // in place
 
-	test.MapEquals(t, exp, orig)
+	must.MapEq(t, exp, orig)
 }
 
 func Test_Taxonomy_Bases(t *testing.T) {
@@ -91,7 +91,7 @@ func Test_Taxonomy_Bases(t *testing.T) {
 	}
 
 	bases := orig.Bases()
-	test.EqualsSlice(t, []Triple{
+	must.Eq(t, []Triple{
 		NewTriple(1, 2, 3),
 		NewTriple(1, 3, 0),
 	}, bases)
@@ -111,5 +111,5 @@ func Test_Taxonomy_Latest(t *testing.T) {
 	}
 
 	latest := orig.Latest()
-	test.Eq(t, semantic.New(1, 3, 0), latest)
+	must.Eq(t, semantic.New(1, 3, 0), latest)
 }

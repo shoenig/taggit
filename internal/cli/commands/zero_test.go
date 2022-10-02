@@ -8,9 +8,9 @@ import (
 	"testing"
 
 	"github.com/google/subcommands"
-	"github.com/shoenig/test"
-	"gophers.dev/cmds/taggit/internal/tags"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
+	"github.com/shoenig/taggit/internal/tags"
+	"github.com/shoenig/test/must"
 )
 
 func Test_ZeroCmd_commandInfo(t *testing.T) {
@@ -20,13 +20,13 @@ func Test_ZeroCmd_commandInfo(t *testing.T) {
 	majorCmd := NewZeroCmd(newKit(mocks))
 
 	name := majorCmd.Name()
-	test.Eq(t, zeroCmdName, name)
+	must.Eq(t, zeroCmdName, name)
 
 	synop := majorCmd.Synopsis()
-	test.Eq(t, zeroCmdSynopsis, synop)
+	must.Eq(t, zeroCmdSynopsis, synop)
 
 	usage := majorCmd.Usage()
-	test.Eq(t, zeroCmdUsage, usage)
+	must.Eq(t, zeroCmdUsage, usage)
 }
 
 func Test_ZeroCmd_Execute_normal(t *testing.T) {
@@ -46,14 +46,14 @@ func Test_ZeroCmd_Execute_normal(t *testing.T) {
 	zeroCmd := NewZeroCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := zeroCmd.Execute(ctx, fs)
 
-	test.Eq(t, subcommands.ExitSuccess, status)
-	test.Eq(t, exp, mocks.stdout.String())
-	test.Eq(t, "", mocks.stderr.String())
+	must.Eq(t, subcommands.ExitSuccess, status)
+	must.Eq(t, exp, mocks.stdout.String())
+	must.Eq(t, "", mocks.stderr.String())
 }
 
 func Test_ZeroCmd_Execute_hasPrevious(t *testing.T) {
@@ -76,14 +76,14 @@ func Test_ZeroCmd_Execute_hasPrevious(t *testing.T) {
 	zeroCmd := NewZeroCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := zeroCmd.Execute(ctx, fs)
 
-	test.Eq(t, subcommands.ExitFailure, status)
-	test.Eq(t, "", mocks.stdout.String())
-	test.True(t, strings.Contains(mocks.stderr.String(), exp))
+	must.Eq(t, subcommands.ExitFailure, status)
+	must.Eq(t, "", mocks.stdout.String())
+	must.True(t, strings.Contains(mocks.stderr.String(), exp))
 }
 
 func Test_ZeroCmd_Execute_listErr(t *testing.T) {
@@ -99,13 +99,13 @@ func Test_ZeroCmd_Execute_listErr(t *testing.T) {
 	zeroCmd := NewZeroCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := zeroCmd.Execute(ctx, fs)
-	test.Eq(t, subcommands.ExitFailure, status)
-	test.Eq(t, "", mocks.stdout.String())
-	test.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, subcommands.ExitFailure, status)
+	must.Eq(t, "", mocks.stdout.String())
+	must.Eq(t, exp, mocks.stderr.String())
 }
 
 func Test_ZeroCmd_Execute_creatorErr(t *testing.T) {
@@ -127,11 +127,11 @@ func Test_ZeroCmd_Execute_creatorErr(t *testing.T) {
 	zeroCmd := NewZeroCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := zeroCmd.Execute(ctx, fs)
-	test.Eq(t, subcommands.ExitFailure, status)
-	test.Eq(t, "", mocks.stdout.String())
-	test.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, subcommands.ExitFailure, status)
+	must.Eq(t, "", mocks.stdout.String())
+	must.Eq(t, exp, mocks.stderr.String())
 }

@@ -3,37 +3,37 @@ package tags
 import (
 	"testing"
 
-	"github.com/shoenig/test"
+	"github.com/shoenig/test/must"
 )
 
 func Test_Triple_Major(t *testing.T) {
 	triple := NewTriple(3, 4, 5)
 	major := triple.Major()
-	test.Eq(t, 3, major)
+	must.Eq(t, 3, major)
 }
 
 func Test_Triple_Minor(t *testing.T) {
 	triple := NewTriple(3, 4, 5)
 	minor := triple.Minor()
-	test.Eq(t, 4, minor)
+	must.Eq(t, 4, minor)
 }
 
 func Test_Triple_Patch(t *testing.T) {
 	triple := NewTriple(3, 4, 5)
 	patch := triple.Patch()
-	test.Eq(t, 5, patch)
+	must.Eq(t, 5, patch)
 }
 
 func Test_Triple_String(t *testing.T) {
 	triple := NewTriple(3, 4, 5)
 	s := triple.String()
-	test.Eq(t, "v3.4.5", s)
+	must.Eq(t, "v3.4.5", s)
 }
 
 func Test_Triple_Less(t *testing.T) {
 	try := func(a, b Triple, expLess bool) {
 		result := a.Less(b)
-		test.Eq(t, expLess, result)
+		must.Eq(t, expLess, result)
 	}
 
 	try(

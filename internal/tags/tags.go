@@ -2,7 +2,7 @@
 package tags
 
 import (
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
 )
 
 // A Triple represents the core Major, Minor, and Patch levels of a tag. This is

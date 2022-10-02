@@ -3,8 +3,8 @@ package cli
 import (
 	"testing"
 
-	"github.com/shoenig/test"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
+	"github.com/shoenig/test/must"
 )
 
 func Test_TagPusher_PushTag(t *testing.T) {
@@ -16,5 +16,5 @@ func Test_TagPusher_PushTag(t *testing.T) {
 
 	pusher := NewTagPusher(repo)
 	err := pusher.PushTag(semantic.New(0, 0, 3))
-	test.NoError(t, err)
+	must.NoError(t, err)
 }

@@ -3,9 +3,9 @@ package cli
 import (
 	git5 "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
 
-	"gophers.dev/cmds/taggit/internal/tags"
+	"github.com/shoenig/taggit/internal/tags"
 )
 
 //go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i TagLister -s _mock.go

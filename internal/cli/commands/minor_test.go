@@ -7,9 +7,9 @@ import (
 	"testing"
 
 	"github.com/google/subcommands"
-	"github.com/shoenig/test"
-	"gophers.dev/cmds/taggit/internal/tags"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
+	"github.com/shoenig/taggit/internal/tags"
+	"github.com/shoenig/test/must"
 )
 
 func Test_MinorCmd_commandInfo(t *testing.T) {
@@ -19,13 +19,13 @@ func Test_MinorCmd_commandInfo(t *testing.T) {
 	majorCmd := NewMinorCmd(newKit(mocks))
 
 	name := majorCmd.Name()
-	test.Eq(t, minorCmdName, name)
+	must.Eq(t, minorCmdName, name)
 
 	synop := majorCmd.Synopsis()
-	test.Eq(t, minorCmdSynopsis, synop)
+	must.Eq(t, minorCmdSynopsis, synop)
 
 	usage := majorCmd.Usage()
-	test.Eq(t, minorCmdUsage, usage)
+	must.Eq(t, minorCmdUsage, usage)
 }
 
 func Test_MinorCmd_Execute_normal(t *testing.T) {
@@ -48,14 +48,14 @@ func Test_MinorCmd_Execute_normal(t *testing.T) {
 	minorCmd := NewMinorCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := minorCmd.Execute(ctx, fs)
 
-	test.Eq(t, subcommands.ExitSuccess, status)
-	test.Eq(t, exp, mocks.stdout.String())
-	test.Eq(t, "", mocks.stderr.String())
+	must.Eq(t, subcommands.ExitSuccess, status)
+	must.Eq(t, exp, mocks.stdout.String())
+	must.Eq(t, "", mocks.stderr.String())
 }
 
 func Test_MinorCmd_Execute_noPrevious(t *testing.T) {
@@ -73,13 +73,13 @@ taggit: failure: no previous tags
 	minorCmd := NewMinorCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := minorCmd.Execute(ctx, fs)
-	test.Eq(t, subcommands.ExitFailure, status)
-	test.Eq(t, "", mocks.stdout.String())
-	test.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, subcommands.ExitFailure, status)
+	must.Eq(t, "", mocks.stdout.String())
+	must.Eq(t, exp, mocks.stderr.String())
 }
 
 func Test_MinorCmd_Execute_listErr(t *testing.T) {
@@ -95,13 +95,13 @@ func Test_MinorCmd_Execute_listErr(t *testing.T) {
 	minorCmd := NewMinorCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := minorCmd.Execute(ctx, fs)
-	test.Eq(t, subcommands.ExitFailure, status)
-	test.Eq(t, "", mocks.stdout.String())
-	test.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, subcommands.ExitFailure, status)
+	must.Eq(t, "", mocks.stdout.String())
+	must.Eq(t, exp, mocks.stderr.String())
 }
 
 func Test_MinorCmd_Execute_creatorErr(t *testing.T) {
@@ -125,11 +125,11 @@ func Test_MinorCmd_Execute_creatorErr(t *testing.T) {
 	minorCmd := NewMinorCmd(newKit(mocks))
 
 	ctx := context.Background()
-	fs := flag.NewFlagSet("test", flag.PanicOnError)
+	fs := flag.NewFlagSet("testing", flag.PanicOnError)
 	_ = fs.String("meta", "", "usage")
 
 	status := minorCmd.Execute(ctx, fs)
-	test.Eq(t, subcommands.ExitFailure, status)
-	test.Eq(t, "", mocks.stdout.String())
-	test.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, subcommands.ExitFailure, status)
+	must.Eq(t, "", mocks.stdout.String())
+	must.Eq(t, exp, mocks.stderr.String())
 }

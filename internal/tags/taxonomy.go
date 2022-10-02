@@ -3,8 +3,8 @@ package tags
 import (
 	"sort"
 
+	"github.com/shoenig/semantic"
 	"golang.org/x/exp/slices"
-	"gophers.dev/pkgs/semantic"
 )
 
 type Tags []semantic.Tag

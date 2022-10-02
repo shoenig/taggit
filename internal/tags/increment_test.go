@@ -3,8 +3,8 @@ package tags
 import (
 	"testing"
 
-	"github.com/shoenig/test"
-	"gophers.dev/pkgs/semantic"
+	"github.com/shoenig/semantic"
+	"github.com/shoenig/test/must"
 )
 
 func Test_HasPrevious(t *testing.T) {
@@ -12,7 +12,7 @@ func Test_HasPrevious(t *testing.T) {
 
 	try := func(t *testing.T, taxonomy Taxonomy, exp bool) {
 		result := HasPrevious(taxonomy)
-		test.Eq(t, exp, result)
+		must.Eq(t, exp, result)
 	}
 
 	t.Run("one existing tag", func(t *testing.T) {
@@ -38,10 +38,10 @@ func Test_IncMajor(t *testing.T) {
 
 	try := func(t *testing.T, ext Extensions, previous, exp semantic.Tag) {
 		next := IncMajor(previous, ext)
-		test.Eq(t, exp, next)
+		must.Eq(t, exp, next)
 	}
 
-	// test the 2x2 matrix of pre-release presence
+	// must.the 2x2 matrix of pre-release presence
 
 	t.Run("prevPR.none nextPR.none", func(t *testing.T) {
 		// previous tag is final, gets incremented
@@ -79,7 +79,7 @@ func Test_IncMajor(t *testing.T) {
 		)
 	})
 
-	// test that build metadata is set on next tag
+	// must.that build metadata is set on next tag
 
 	t.Run("next has build metadata", func(t *testing.T) {
 		try(t,
@@ -103,10 +103,10 @@ func Test_IncMinor(t *testing.T) {
 
 	try := func(t *testing.T, ext Extensions, previous, exp semantic.Tag) {
 		next := IncMinor(previous, ext)
-		test.Eq(t, exp, next)
+		must.Eq(t, exp, next)
 	}
 
-	// test the 2x2 matrix of pre-release presence
+	// must.the 2x2 matrix of pre-release presence
 
 	t.Run("prevPR.none nextPR.none", func(t *testing.T) {
 		// previous tag is final, gets incremented
@@ -144,7 +144,7 @@ func Test_IncMinor(t *testing.T) {
 		)
 	})
 
-	// test that build metadata is set on next tag
+	// must.that build metadata is set on next tag
 
 	t.Run("next has build metadata", func(t *testing.T) {
 		try(t,
@@ -168,10 +168,10 @@ func Test_IncPatch(t *testing.T) {
 
 	try := func(t *testing.T, ext Extensions, previous, exp semantic.Tag) {
 		next := IncPatch(previous, ext)
-		test.Eq(t, exp, next)
+		must.Eq(t, exp, next)
 	}
 
-	// test the 2x2 matrix of pre-release presence
+	// must.the 2x2 matrix of pre-release presence
 
 	t.Run("prevPR.none nextPR.none", func(t *testing.T) {
 		// previous tag is final, gets incremented
@@ -208,7 +208,7 @@ func Test_IncPatch(t *testing.T) {
 		)
 	})
 
-	// test that build metadata is set on next tag
+	// must.that build metadata is set on next tag
 
 	t.Run("next has build metadata", func(t *testing.T) {
 		try(t,

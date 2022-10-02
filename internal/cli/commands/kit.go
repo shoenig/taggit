@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"gophers.dev/cmds/taggit/internal/cli"
-	"gophers.dev/cmds/taggit/internal/cli/output"
+	"github.com/shoenig/taggit/internal/cli"
+	"github.com/shoenig/taggit/internal/cli/output"
 )
 
 func NewKit(

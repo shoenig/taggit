@@ -8,9 +8,9 @@ import (
 
 	git5 "github.com/go-git/go-git/v5"
 	"github.com/google/subcommands"
-	"gophers.dev/cmds/taggit/internal/cli"
-	"gophers.dev/cmds/taggit/internal/cli/commands"
-	"gophers.dev/cmds/taggit/internal/cli/output"
+	"github.com/shoenig/taggit/internal/cli"
+	"github.com/shoenig/taggit/internal/cli/commands"
+	"github.com/shoenig/taggit/internal/cli/output"
 )
 
 func main() {
