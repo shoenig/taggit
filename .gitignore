@@ -16,3 +16,6 @@ taggit
 
 # goreleaser
 dist/
+
+# macOS
+.DS_Store
