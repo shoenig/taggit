@@ -49,5 +49,5 @@ lint: vet
 [group('release')]
 release:
     export GORELEASER_CURRENT_TAG={{TAG}}
-    envy exec gh-release goreleaser release --clean
+    envy exec gh-release goreleaser release --clean --config {{scripts}}/goreleaser.yaml
     rm -rf dist
