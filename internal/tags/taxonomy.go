@@ -1,10 +1,10 @@
 package tags
 
 import (
+	"slices"
 	"sort"
 
 	"github.com/shoenig/semantic"
-	"golang.org/x/exp/slices"
 )
 
 type Tags []semantic.Tag
