@@ -7,8 +7,6 @@ import (
 	"github.com/shoenig/semantic"
 )
 
-//go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i TagCreator -s _mock.go
-
 // A TagCreator is used to create git tags.
 type TagCreator interface {
 	// CreateTag creates the given tag in the repository.

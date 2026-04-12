@@ -4,11 +4,8 @@ import (
 	git5 "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/shoenig/semantic"
-
 	"github.com/shoenig/taggit/internal/tags"
 )
-
-//go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i TagLister -s _mock.go
 
 // A TagLister is used to list tags associated with the git repository of a
 // Go module.
