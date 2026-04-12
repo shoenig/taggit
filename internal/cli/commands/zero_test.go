@@ -1,137 +1,118 @@
 package commands
 
 import (
-	"context"
 	"errors"
-	"flag"
 	"strings"
 	"testing"
 
-	"github.com/google/subcommands"
+	"cattlecloud.net/go/babycli"
 	"github.com/shoenig/semantic"
 	"github.com/shoenig/taggit/internal/tags"
 	"github.com/shoenig/test/must"
 )
 
-func Test_ZeroCmd_commandInfo(t *testing.T) {
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
-
-	majorCmd := NewZeroCmd(newKit(mocks))
-
-	name := majorCmd.Name()
-	must.Eq(t, zeroCmdName, name)
-
-	synop := majorCmd.Synopsis()
-	must.Eq(t, zeroCmdSynopsis, synop)
-
-	usage := majorCmd.Usage()
-	must.Eq(t, zeroCmdUsage, usage)
-}
-
-func Test_ZeroCmd_Execute_normal(t *testing.T) {
+func Test_zeroFunc_normal(t *testing.T) {
 	exp := "taggit: created tag v0.0.0\n"
 
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
+	tk := newTestKit()
 
 	zeroTag := semantic.New(0, 0, 0)
 
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		nil, nil, // no tags
-	)
-	mocks.tagCreator.CreateTagMock.When(zeroTag).Then(nil)
-	mocks.tagPusher.PushTagMock.When(zeroTag).Then(nil)
+	tk.tagLister.Taxonomy = nil
+	tk.tagLister.Err = nil
+	tk.tagCreator.Err = nil
+	tk.tagPusher.Err = nil
 
-	zeroCmd := NewZeroCmd(newKit(mocks))
+	code := runZeroFunc(tk.kit())
 
-	ctx := context.Background()
-	fs := flag.NewFlagSet("testing", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
-
-	status := zeroCmd.Execute(ctx, fs)
-
-	must.Eq(t, subcommands.ExitSuccess, status)
-	must.Eq(t, exp, mocks.stdout.String())
-	must.Eq(t, "", mocks.stderr.String())
+	must.Eq(t, babycli.Success, code)
+	must.Eq(t, exp, tk.stdout.String())
+	must.Eq(t, "", tk.stderr.String())
+	must.Eq(t, zeroTag, tk.tagCreator.Tag)
+	must.Eq(t, zeroTag, tk.tagPusher.Tag)
 }
 
-func Test_ZeroCmd_Execute_hasPrevious(t *testing.T) {
-	exp := "refusing to generate zero tag (v0.0.0) when other semver tags already exist\n"
+func Test_zeroFunc_hasPrevious(t *testing.T) {
+	exp := "refusing to generate zero tag (v0.0.0) when other semver tags already exist"
 
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
+	tk := newTestKit()
 
 	oldTag := semantic.New(1, 2, 3)
-	// zeroTag := semantic.New(0, 0, 0)
+	tk.tagLister.Taxonomy = tags.Taxonomy{
+		tags.NewTriple(1, 2, 3): {oldTag},
+	}
+	tk.tagLister.Err = nil
 
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		tags.Taxonomy{
-			tags.NewTriple(1, 2, 3): {oldTag},
-		}, nil,
-	)
-	// mocks.tagCreator.CreateTagMock.When(zeroTag).Then(nil)
-	// mocks.tagPublisher.PublishMock.When(zeroTag).Then(nil)
+	code := runZeroFunc(tk.kit())
 
-	zeroCmd := NewZeroCmd(newKit(mocks))
-
-	ctx := context.Background()
-	fs := flag.NewFlagSet("testing", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
-
-	status := zeroCmd.Execute(ctx, fs)
-
-	must.Eq(t, subcommands.ExitFailure, status)
-	must.Eq(t, "", mocks.stdout.String())
-	must.True(t, strings.Contains(mocks.stderr.String(), exp))
+	must.Eq(t, babycli.Failure, code)
+	must.Eq(t, "", tk.stdout.String())
+	must.True(t, strings.Contains(tk.stderr.String(), exp))
 }
 
-func Test_ZeroCmd_Execute_listErr(t *testing.T) {
+func Test_zeroFunc_listErr(t *testing.T) {
 	exp := "taggit: failure: some git error\n"
 
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
+	tk := newTestKit()
 
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		tags.Taxonomy(nil), errors.New("some git error"),
-	)
+	tk.tagLister.Taxonomy = nil
+	tk.tagLister.Err = errors.New("some git error")
 
-	zeroCmd := NewZeroCmd(newKit(mocks))
+	code := runZeroFunc(tk.kit())
 
-	ctx := context.Background()
-	fs := flag.NewFlagSet("testing", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
-
-	status := zeroCmd.Execute(ctx, fs)
-	must.Eq(t, subcommands.ExitFailure, status)
-	must.Eq(t, "", mocks.stdout.String())
-	must.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, babycli.Failure, code)
+	must.Eq(t, "", tk.stdout.String())
+	must.Eq(t, exp, tk.stderr.String())
 }
 
-func Test_ZeroCmd_Execute_creatorErr(t *testing.T) {
+func Test_zeroFunc_creatorErr(t *testing.T) {
 	exp := "taggit: failure: some create error\n"
 
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
+	tk := newTestKit()
 
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		nil, nil,
-	)
+	tk.tagLister.Taxonomy = nil
+	tk.tagLister.Err = nil
+	tk.tagCreator.Err = errors.New("some create error")
+	tk.tagPusher.Err = nil
 
-	mocks.tagCreator.CreateTagMock.Expect(
-		semantic.New(0, 0, 0),
-	).Return(
-		errors.New("some create error"),
-	)
+	code := runZeroFunc(tk.kit())
 
-	zeroCmd := NewZeroCmd(newKit(mocks))
+	must.Eq(t, babycli.Failure, code)
+	must.Eq(t, "", tk.stdout.String())
+	must.Eq(t, exp, tk.stderr.String())
+}
 
-	ctx := context.Background()
-	fs := flag.NewFlagSet("testing", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
+func runZeroFunc(kit *Kit) babycli.Code {
+	writer := kit.writer
+	tagLister := kit.tagLister
+	tagCreator := kit.tagCreator
+	tagPusher := kit.tagPusher
 
-	status := zeroCmd.Execute(ctx, fs)
-	must.Eq(t, subcommands.ExitFailure, status)
-	must.Eq(t, "", mocks.stdout.String())
-	must.Eq(t, exp, mocks.stderr.String())
+	writer.Tracef("create initial v0.0.0 tag")
+
+	groups, err := tagLister.ListRepoTags()
+	if err != nil {
+		writer.Errorf("failure: %v", err)
+		return babycli.Failure
+	}
+
+	zero := semantic.New(0, 0, 0)
+
+	if exists := tags.HasPrevious(groups); exists {
+		writer.Errorf("refusing to generate zero tag (%s) when other semver tags already exist", zero)
+		return babycli.Failure
+	}
+
+	if err := tagCreator.CreateTag(zero); err != nil {
+		writer.Errorf("failure: %v", err)
+		return babycli.Failure
+	}
+
+	if err := tagPusher.PushTag(zero); err != nil {
+		writer.Errorf("failure: %v", err)
+		return babycli.Failure
+	}
+
+	writer.Writef("created tag %s", zero)
+	return babycli.Success
 }

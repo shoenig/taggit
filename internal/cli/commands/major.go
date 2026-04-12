@@ -1,88 +1,67 @@
 package commands
 
 import (
-	"context"
-	"flag"
-
-	"github.com/google/subcommands"
-	"github.com/shoenig/taggit/internal/cli"
-	"github.com/shoenig/taggit/internal/cli/output"
+	"cattlecloud.net/go/babycli"
 	"github.com/shoenig/taggit/internal/tags"
 )
 
-const (
-	majorCmdName     = "major"
-	majorCmdSynopsis = "Create an incremented major version"
-	majorCmdUsage    = "major [pre-release] -meta='build-metadata'"
-)
-
-func NewMajorCmd(kit *Kit) subcommands.Command {
-	return &majorCmd{
-		writer:     kit.writer,
-		tagLister:  kit.tagLister,
-		tagCreator: kit.tagCreator,
-		tagPusher:  kit.tagPusher,
+func newMajorCommand(kit *Kit) *babycli.Component {
+	return &babycli.Component{
+		Name:        "major",
+		Help:        "Create an incremented major version",
+		Description: "Create an incremented major version",
+		Flags: babycli.Flags{
+			{
+				Type:  babycli.StringFlag,
+				Long:  "meta",
+				Short: "m",
+				Help:  "build metadata label",
+			},
+		},
+		Function: majorFunc(kit),
 	}
 }
 
-type majorCmd struct {
-	writer     output.Writer
-	tagLister  cli.TagLister
-	tagCreator cli.TagCreator
-	tagPusher  cli.TagPusher
-}
+func majorFunc(kit *Kit) babycli.Func {
+	return func(cmd *babycli.Component) babycli.Code {
+		writer := kit.writer
+		tagLister := kit.tagLister
+		tagCreator := kit.tagCreator
+		tagPusher := kit.tagPusher
 
-func (mc *majorCmd) Name() string {
-	return majorCmdName
-}
+		meta := cmd.GetString("meta")
 
-func (mc *majorCmd) Synopsis() string {
-	return majorCmdSynopsis
-}
+		ext := tags.ExtractExtensions(meta, cmd.Arguments())
+		writer.Tracef(
+			"increment major version, pre-release: %q, build-metadata: %q",
+			ext.PreRelease, ext.BuildMetaData,
+		)
 
-func (mc *majorCmd) Usage() string {
-	return majorCmdUsage
-}
+		groups, err := tagLister.ListRepoTags()
+		if err != nil {
+			writer.Errorf("failure: %v", err)
+			return babycli.Failure
+		}
 
-func (mc *majorCmd) SetFlags(fs *flag.FlagSet) {
-	_ = fs.String("meta", "", "build metadata label")
-}
+		if exists := tags.HasPrevious(groups); !exists {
+			writer.Errorf("cannot increment tag because no previous tags exist")
+			return babycli.Failure
+		}
 
-func (mc *majorCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	if err := mc.execute(tags.ExtractExtensions(fs)); err != nil {
-		mc.writer.Errorf("failure: %v", err)
-		return subcommands.ExitFailure
+		latest := groups.Latest()
+		next := tags.IncMajor(latest, ext)
+
+		if err := tagCreator.CreateTag(next); err != nil {
+			writer.Errorf("failure: %v", err)
+			return babycli.Failure
+		}
+
+		if err := tagPusher.PushTag(next); err != nil {
+			writer.Errorf("failure: %v", err)
+			return babycli.Failure
+		}
+
+		writer.Writef("created tag %s", next)
+		return babycli.Success
 	}
-	return subcommands.ExitSuccess
-}
-
-func (mc *majorCmd) execute(ext tags.Extensions) error {
-	mc.writer.Tracef(
-		"increment major version, pre-release: %q, build-metadata: %q",
-		ext.PreRelease, ext.BuildMetaData,
-	)
-
-	groups, err := mc.tagLister.ListRepoTags()
-	if err != nil {
-		return err
-	}
-
-	if exists := tags.HasPrevious(groups); !exists {
-		mc.writer.Errorf("cannot increment tag because no previous tags exist")
-		return ErrNoPreviousTags
-	}
-
-	latest := groups.Latest()
-	next := tags.IncMajor(latest, ext)
-
-	if err := mc.tagCreator.CreateTag(next); err != nil {
-		return err
-	}
-
-	if err := mc.tagPusher.PushTag(next); err != nil {
-		return err
-	}
-
-	mc.writer.Writef("created tag %s", next)
-	return nil
 }

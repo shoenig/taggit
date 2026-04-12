@@ -1,200 +1,133 @@
-taggit
-======
+# taggit
 
-[![Run CI Tests](https://github.com/shoenig/taggit/actions/workflows/ci.yaml/badge.svg)](https://github.com/shoenig/taggit/actions/workflows/ci.yaml)
-[![GitHub](https://img.shields.io/github/license/shoenig/taggit.svg)](LICENSE)
+A CLI tool to publish semver releases from a git repository.
 
-# Project Overview
+## Overview
 
-Command `taggit` is a git repository workflow tool for publishing semver releases
+`taggit` is a command line tool written in Go that helps manage semantic versioning
+tags in a git repository. It provides commands for listing existing tags and creating
+new version tags at patch, minor, and major levels.
 
-# Getting Started
+## Getting Started
 
-The `github.com/shoenig/taggit` CLI tool can be installed by running:
+`taggit` can be installed via `go install` or downloaded from [Releases](https://github.com/shoenig/taggit/releases).
 
-```bash
-$ go install github.com/shoenig/taggit@latest
+#### Install
+
+```shell
+go install github.com/shoenig/taggit@latest
 ```
 
-Example usage:
+## Commands
 
-#### help
+The `taggit` command line tool provides commands for managing version tags.
 
-Use `help` to have `taggit` display proper usage arguments.
+```
+NAME:
+  taggit
 
-```bash
-$ taggit help
-Usage:  <flags> <subcommand> <subcommand args>
+USAGE:
+  taggit  [global options] [command [command options]] [arguments...]
 
-Subcommands:
-	flags            describe all known top-level flags
-	help             describe subcommands and their syntax
-	list             List tagged versions.
-	major            Create an incremented major version
-	minor            Create an incremented minor version
-	patch            Create an incremented patch version
-	zero             Create initial v0.0.0 tag
+VERSION:
+  development
 
+DESCRIPTION:
+  Publish new versions of Go modules.
 
-Use " flags" for a list of top-level flags
+COMMANDS:
+  list  - List tagged versions.
+  zero  - Create initial v0.0.0 tag
+  patch - Create an incremented patch version
+  minor - Create an incremented minor version
+  major - Create an incremented major version
+
+GLOBALS:
+--version/-V   boolean - print version information
+--help/-h      boolean - print help message
 ```
 
 #### list
 
-Use `list` to have `taggit` list all of the semver compatible tags associated
-with the repository.
+The `list` command displays all semver-compatible tags in the repository, organized by base version.
 
-```bash
+```shell
 $ taggit list
-v0.0.0 |= v0.0.0
-v0.0.1 |= v0.0.1
-v0.3.3 |= v0.3.3
-v0.4.0 |= v0.4.0 v0.4.0-rc2 v0.4.0-rc1
-v0.5.0 |= v0.5.0
-v0.9.0 |= v0.9.0
-v1.0.0 |= v1.0.0-rc.2 v1.0.0-rc.1
+v0.1.0 |= v0.1.0 v0.1.0-alpha1
+v0.2.0 |= v0.2.0-rc1 v0.2.0-r1+linux v0.2.0-r1+darwin
 ```
-The output is organized into two sections. On the left are the base versions of
-the set of tags. On the right side is a list of tags associated with the base tag version.
-The order of the list is decreasing based on semver semantics.
 
 #### zero
 
-Use `zero` to create the very first `v0.0.0` tag associated with a repository.
-The version increment commands will not work until the very first tag already exists.
+The `zero` command creates the initial `v0.0.0` tag. This must be done before any other
+version commands can be used.
 
-```bash
+```shell
 $ taggit zero
-taggit: created tag: v0.0.0
+taggit: created tag v0.0.0
 ```
 
 #### patch
 
-Use `patch` to increment the patch level of the current latest version.
+The `patch` command increments the patch level of the current latest version.
 
-```bash
-$ taggit list
-v0.0.0 ✓ | v0.0.0
+```shell
 $ taggit patch
-taggit: created tag: v0.0.1
+taggit: created tag v0.0.1
 ```
 
-To publish a pre-release version, provide the pre-release version as an argument
-to the `patch` command.
+To create a pre-release version, provide the pre-release identifier as an argument:
 
-```bash
+```shell
 $ taggit patch beta1
-taggit: created tag: v0.0.3-beta1
+taggit: created tag v0.0.2-beta1
 ```
 
-If the latest tag happens to be a pre-release version, the patch level is not
-incremented. Instead, a tag with no pre-release extension is published at that
-tag patch level.
+To add build metadata, use the `-m` or `--meta` flag:
 
-```bash
-$ taggit list
-v0.0.0 ✓ | v0.0.0
-v0.0.1 ✓ | v0.0.1
-v0.0.2   | v0.0.2-alpha1
-$ taggit patch
-taggit: created tag: v0.0.2
+```shell
+$ taggit patch -m build123
+taggit: created tag v0.0.2+build123
 ```
 
 #### minor
 
-Use `minor` to increment the minor level of the current latest version.
+The `minor` command increments the minor level of the current latest version.
 
-```bash
-$ taggit list
-v0.0.0 ✓ | v0.0.0
-v0.0.1 ✓ | v0.0.1
-v0.0.2 ✓ | v0.0.2 v0.0.2-alpha1
-v0.0.3 ✓ | v0.0.3 v0.0.3-beta1 
+```shell
 $ taggit minor
-taggit: created tag: v0.1.0
+taggit: created tag v0.1.0
 ```
 
-To publish a pre-release version, provide the pre-release version as an argument
-to the `minor` command.
+Pre-release and metadata options work the same as with `patch`:
 
-```bash
-$ taggit minor beta1
-taggit: created tag: v0.4.0-beta1
-```
+```shell
+$ taggit minor alpha1
+taggit: created tag v0.2.0-alpha1
 
-If the latest tag happens to be a pre-release version, the minor version is not
-incremented. Instead, a tag with no pre-release extension is published at that
-tag minor level.
-
-```bash
-$ taggit list
-v0.0.0 ✓ | v0.0.0
-v0.1.0 ✓ | v0.1.0
-v0.2.0 ✓ | v0.2.0 v0.2.0-beta1
-v0.3.0   | v0.3.0-rc-2 v0.3.0-rc-1
-$ taggit minor
-taggit: created tag: v0.3.0
+$ taggit minor --meta=linux
+taggit: created tag v0.2.0+linux
 ```
 
 #### major
 
-Use `major` to increment the major level of the current latest version.
+The `major` command increments the major level of the current latest version.
 
-```bash
+```shell
 $ taggit major
-taggit: created tag: v1.0.0
+taggit: created tag v1.0.0
 ```
 
-To publish a pre-release version, provide the pre-release version as an argument
-to the `major` command.
+## Global Options
 
-```bash
-$ taggit major rc1
-taggit: created tag: v2.0.0-rc1
-```
+- `-V, --version` - Print version information
+- `-h, --help` - Print help message
 
-If the latest tag happens to be a pre-release version, the major version is not
-incremented. Instead, a tag with no pre-release extension is published at that tag
-major level.
+## Contributing
 
-```bash
-$ taggit list
-v1.0.0 ✓ | v1.0.0
-v2.0.0   | v2.0.0-rc1 
-$ taggit major
-taggit: created tag: v2.0.0
-```
-# Asking Questions
+The `github.com/shoenig/taggit` module is always improving. For bug fixes and new
+features please file an issue.
 
-For technical questions about `taggit`, just file an issue in the GitHub tracker.
-
-# Contributing
-
-We welcome contributions! Feel free to help make `taggit` better.
-
-### Process
-
-- Open an issue and describe the desired feature / bug fix before making
-changes. It's useful to get a second pair of eyes before investing development
-effort.
-- Make the change. If adding a new feature, remember to provide tests that
-demonstrate the new feature works, including any error paths. If contributing
-a bug fix, add tests that demonstrate the erroneous behavior is fixed.
-- Open a pull request. Automated CI tests will run. If the tests fail, please
-make changes to fix the behavior, and repeat until the tests pass.
-- Once everything looks good, one of the indeedeng members will review the
-PR and provide feedback.
-
-# Maintainers
-
-The `github.com/shoenig/taggit` module is maintained by Indeed Engineering.
-
-While we are always busy helping people get jobs, we will try to respond to
-GitHub issues, pull requests, and questions within a couple of business days.
-
-
-For more information please contact opensource@indeed.com.
-
-# License
+## License
 
 The `github.com/shoenig/taggit` module is open source under the [BSD-3-Clause](LICENSE) license.

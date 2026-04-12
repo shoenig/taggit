@@ -1,19 +1,18 @@
 package tags
 
 import (
-	"flag"
 	"testing"
 
 	"github.com/shoenig/test/must"
 )
 
 func Test_ExtractExtensions(t *testing.T) {
-	fs := flag.NewFlagSet("testing", flag.PanicOnError)
-	fs.String("meta", "bm1", "set metadata")
+	ext := ExtractExtensions("abc123", nil)
+	must.Eq(t, "abc123", ext.BuildMetaData)
+}
 
-	err := fs.Set("meta", "abc123")
-	must.NoError(t, err)
-
-	ext := ExtractExtensions(fs)
+func Test_ExtractExtensions_withPreRelease(t *testing.T) {
+	ext := ExtractExtensions("abc123", []string{"beta"})
+	must.Eq(t, "beta", ext.PreRelease)
 	must.Eq(t, "abc123", ext.BuildMetaData)
 }

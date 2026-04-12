@@ -11,7 +11,7 @@ builds:
       - linux
       - darwin
     ldflags:
-      - -X github.com/shoenig/go-modtool/commands.Version={{.Version}}
+      - -X github.com/shoenig/taggit/version.Version={{.Version}}
 checksum:
   name_template: 'checksums.txt'
 snapshot:

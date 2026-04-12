@@ -13,12 +13,12 @@ type mocks struct {
 	stdout     *bytes.Buffer
 	stderr     *bytes.Buffer
 	writer     output.Writer
-	tagLister  *cli.TagListerMock
-	tagCreator *cli.TagCreatorMock
-	tagPusher  *cli.TagPusherMock
+	tagLister  *cli.FakeTagLister
+	tagCreator *cli.FakeTagCreator
+	tagPusher  *cli.FakeTagPusher
 }
 
-func newMocks(t *testing.T) mocks {
+func newMocks(_ *testing.T) mocks {
 	var (
 		stdout bytes.Buffer
 		stderr bytes.Buffer
@@ -28,16 +28,10 @@ func newMocks(t *testing.T) mocks {
 		stdout:     &stdout,
 		stderr:     &stderr,
 		writer:     output.NewWriter(&stdout, &stderr),
-		tagLister:  cli.NewTagListerMock(t),
-		tagCreator: cli.NewTagCreatorMock(t),
-		tagPusher:  cli.NewTagPusherMock(t),
+		tagLister:  &cli.FakeTagLister{},
+		tagCreator: &cli.FakeTagCreator{},
+		tagPusher:  &cli.FakeTagPusher{},
 	}
-}
-
-func (m mocks) assertions(_ *testing.T) {
-	m.tagLister.MinimockFinish()
-	m.tagCreator.MinimockFinish()
-	m.tagPusher.MinimockFinish()
 }
 
 func Test_NewKit(t *testing.T) {

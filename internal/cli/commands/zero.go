@@ -1,84 +1,53 @@
 package commands
 
 import (
-	"context"
-	"flag"
-
-	"github.com/google/subcommands"
+	"cattlecloud.net/go/babycli"
 	"github.com/shoenig/semantic"
-	"github.com/shoenig/taggit/internal/cli"
-	"github.com/shoenig/taggit/internal/cli/output"
 	"github.com/shoenig/taggit/internal/tags"
 )
 
-const (
-	zeroCmdName     = "zero"
-	zeroCmdSynopsis = "Create initial v0.0.0 tag"
-	zeroCmdUsage    = "zero"
-)
-
-func NewZeroCmd(kit *Kit) subcommands.Command {
-	return &zeroCmd{
-		writer:     kit.writer,
-		tagLister:  kit.tagLister,
-		tagCreator: kit.tagCreator,
-		tagPusher:  kit.tagPusher,
+func newZeroCommand(kit *Kit) *babycli.Component {
+	return &babycli.Component{
+		Name:        "zero",
+		Help:        "Create initial v0.0.0 tag",
+		Description: "Create initial v0.0.0 tag",
+		Function:    zeroFunc(kit),
 	}
 }
 
-type zeroCmd struct {
-	writer     output.Writer
-	tagLister  cli.TagLister
-	tagCreator cli.TagCreator
-	tagPusher  cli.TagPusher
-}
+func zeroFunc(kit *Kit) babycli.Func {
+	return func(_ *babycli.Component) babycli.Code {
+		writer := kit.writer
+		tagLister := kit.tagLister
+		tagCreator := kit.tagCreator
+		tagPusher := kit.tagPusher
 
-func (zc *zeroCmd) Name() string {
-	return zeroCmdName
-}
+		writer.Tracef("create initial v0.0.0 tag")
 
-func (zc *zeroCmd) Synopsis() string {
-	return zeroCmdSynopsis
-}
+		groups, err := tagLister.ListRepoTags()
+		if err != nil {
+			writer.Errorf("failure: %v", err)
+			return babycli.Failure
+		}
 
-func (zc *zeroCmd) Usage() string {
-	return zeroCmdUsage
-}
+		zero := semantic.New(0, 0, 0)
 
-func (zc *zeroCmd) SetFlags(_ *flag.FlagSet) {
-}
+		if exists := tags.HasPrevious(groups); exists {
+			writer.Errorf("refusing to generate zero tag (%s) when other semver tags already exist", zero)
+			return babycli.Failure
+		}
 
-func (zc *zeroCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	if err := zc.execute(); err != nil {
-		zc.writer.Errorf("failure: %v", err)
-		return subcommands.ExitFailure
+		if err := tagCreator.CreateTag(zero); err != nil {
+			writer.Errorf("failure: %v", err)
+			return babycli.Failure
+		}
+
+		if err := tagPusher.PushTag(zero); err != nil {
+			writer.Errorf("failure: %v", err)
+			return babycli.Failure
+		}
+
+		writer.Writef("created tag %s", zero)
+		return babycli.Success
 	}
-	return subcommands.ExitSuccess
-}
-
-func (zc *zeroCmd) execute() error {
-	zc.writer.Tracef("create initial v0.0.0 tag")
-
-	groups, err := zc.tagLister.ListRepoTags()
-	if err != nil {
-		return err
-	}
-
-	zero := semantic.New(0, 0, 0)
-
-	if exists := tags.HasPrevious(groups); exists {
-		zc.writer.Errorf("refusing to generate zero tag (%s) when other semver tags already exist", zero)
-		return ErrPreviousTags
-	}
-
-	if err := zc.tagCreator.CreateTag(zero); err != nil {
-		return err
-	}
-
-	if err := zc.tagPusher.PushTag(zero); err != nil {
-		return err
-	}
-
-	zc.writer.Writef("created tag %s", zero)
-	return nil
 }
