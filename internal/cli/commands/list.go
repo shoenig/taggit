@@ -7,10 +7,10 @@ import (
 	"strings"
 
 	"github.com/google/subcommands"
+	"github.com/shoenig/semantic"
 	"github.com/shoenig/taggit/internal/cli"
 	"github.com/shoenig/taggit/internal/cli/output"
 	"github.com/shoenig/taggit/internal/tags"
-	"github.com/shoenig/semantic"
 )
 
 const (
@@ -43,11 +43,10 @@ func (lc *listCmd) Usage() string {
 	return listCmdUsage
 }
 
-func (lc *listCmd) SetFlags(fs *flag.FlagSet) {
-	// no flags when listing versions, for now
+func (lc *listCmd) SetFlags(_ *flag.FlagSet) {
 }
 
-func (lc *listCmd) Execute(_ context.Context, f *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+func (lc *listCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	if err := lc.execute(); err != nil {
 		lc.writer.Errorf("failure: %v", err)
 		return subcommands.ExitFailure
@@ -85,7 +84,7 @@ func outputLineForTriple(triple tags.Triple, associated []semantic.Tag) string {
 }
 
 func associatedList(associated []semantic.Tag) []string {
-	var asStrings []string
+	asStrings := make([]string, 0, len(associated))
 	for _, aTag := range associated {
 		asStrings = append(asStrings, aTag.String())
 	}

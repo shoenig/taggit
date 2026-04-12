@@ -34,7 +34,7 @@ func newMocks(t *testing.T) mocks {
 	}
 }
 
-func (m mocks) assertions(t *testing.T) {
+func (m mocks) assertions(_ *testing.T) {
 	m.tagLister.MinimockFinish()
 	m.tagCreator.MinimockFinish()
 	m.tagPusher.MinimockFinish()
