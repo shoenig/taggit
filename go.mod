@@ -7,7 +7,6 @@ require (
 	github.com/go-git/go-git/v5 v5.17.2
 	github.com/shoenig/semantic v1.2.1
 	github.com/shoenig/test v1.12.2
-	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f
 )
 
 require (
