@@ -5,7 +5,6 @@ go 1.26
 require (
 	cattlecloud.net/go/babycli v0.2.0
 	github.com/go-git/go-git/v5 v5.17.2
-	github.com/pkg/errors v0.9.1
 	github.com/shoenig/semantic v1.2.1
 	github.com/shoenig/test v1.12.2
 	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f

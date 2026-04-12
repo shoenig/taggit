@@ -1,8 +1,9 @@
 package cli
 
 import (
+	"fmt"
+
 	git5 "github.com/go-git/go-git/v5"
-	"github.com/pkg/errors"
 	"github.com/shoenig/semantic"
 )
 
@@ -27,7 +28,7 @@ func NewTagCreator(r *git5.Repository) TagCreator {
 func (tc *tagCreator) CreateTag(tag semantic.Tag) error {
 	head, err := tc.repository.Head()
 	if err != nil {
-		return errors.Wrap(err, "could not find head")
+		return fmt.Errorf("could not create tag: %w", err)
 	}
 
 	if _, err := tc.repository.CreateTag(
@@ -35,7 +36,7 @@ func (tc *tagCreator) CreateTag(tag semantic.Tag) error {
 		head.Hash(),
 		nil, // options, maybe include a message
 	); err != nil {
-		return errors.Wrap(err, "could not create tag")
+		return fmt.Errorf("could not create tag: %w", err)
 	}
 
 	return nil
