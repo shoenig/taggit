@@ -7,7 +7,6 @@ import (
 
 	git5 "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
-	"github.com/pkg/errors"
 	"github.com/shoenig/semantic"
 )
 
@@ -32,7 +31,7 @@ func NewTagPusher(r *git5.Repository) TagPusher {
 func (tp *tagPusher) PushTag(tag semantic.Tag) error {
 	remotes, err := tp.repository.Remotes()
 	if err != nil {
-		return errors.Wrap(err, "could not find remotes")
+		return fmt.Errorf("could not find remotes: %w", err)
 	}
 
 	if len(remotes) == 0 {
@@ -49,7 +48,7 @@ func (tp *tagPusher) PushTag(tag semantic.Tag) error {
 		RemoteName: "", // default
 		RefSpecs:   []config.RefSpec{config.RefSpec(refSpec)},
 	}); err != nil {
-		return errors.Wrap(err, "could not push tag")
+		return fmt.Errorf("could not push tag: %w", err)
 	}
 
 	return nil
