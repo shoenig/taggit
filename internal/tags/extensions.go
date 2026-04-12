@@ -1,36 +1,25 @@
 package tags
 
 import (
-	"flag"
 	"strings"
 )
 
-// Extensions represent the two kinds of extra "labels" that can be attached to
-// a semantic version tag, described in https://semver.org/.
 type Extensions struct {
 	PreRelease    string
 	BuildMetaData string
 }
 
-// ExtractExtensions will extract the pre-release and/or build-metadata information from
-// a FlagSet, if those pieces of information were provided.
-//
-// The pre-release information is the 0th positional argument in the context of
-// a sub-command.
-//
-// The build-metadata information is passed in via the "-meta" flag.
-func ExtractExtensions(fs *flag.FlagSet) Extensions {
+func ExtractExtensions(meta string, preReleaseArgs []string) Extensions {
 	var (
 		preRelease    string
 		buildMetadata string
 	)
 
-	args := fs.Args()
-	if len(args) > 0 {
-		preRelease = args[0]
+	if len(preReleaseArgs) > 0 {
+		preRelease = preReleaseArgs[0]
 	}
 
-	buildMetadata = fs.Lookup("meta").Value.String()
+	buildMetadata = meta
 
 	return Extensions{
 		PreRelease:    clean(preRelease),

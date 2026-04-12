@@ -1,79 +1,49 @@
 package commands
 
 import (
-	"context"
-	"flag"
 	"fmt"
 	"strings"
 
-	"github.com/google/subcommands"
+	"cattlecloud.net/go/babycli"
 	"github.com/shoenig/semantic"
-	"github.com/shoenig/taggit/internal/cli"
 	"github.com/shoenig/taggit/internal/cli/output"
 	"github.com/shoenig/taggit/internal/tags"
 )
 
-const (
-	listCmdName     = "list"
-	listCmdSynopsis = "List tagged versions."
-	listCmdUsage    = "list"
-)
-
-func NewListCmd(kit *Kit) subcommands.Command {
-	return &listCmd{
-		writer:    kit.writer,
-		tagLister: kit.tagLister,
+func newListCommand(kit *Kit) *babycli.Component {
+	return &babycli.Component{
+		Name:        "list",
+		Help:        "List tagged versions.",
+		Description: "List tagged versions.",
+		Function:    listFunc(kit),
 	}
 }
 
-type listCmd struct {
-	writer    output.Writer
-	tagLister cli.TagLister
-}
+func listFunc(kit *Kit) babycli.Func {
+	return func(_ *babycli.Component) babycli.Code {
+		writer := kit.writer
+		tagLister := kit.tagLister
 
-func (lc *listCmd) Name() string {
-	return listCmdName
-}
+		tax, err := tagLister.ListRepoTags()
+		if err != nil {
+			writer.Errorf("failure: %v", err)
+			return babycli.Failure
+		}
 
-func (lc *listCmd) Synopsis() string {
-	return listCmdSynopsis
-}
-
-func (lc *listCmd) Usage() string {
-	return listCmdUsage
-}
-
-func (lc *listCmd) SetFlags(_ *flag.FlagSet) {
-}
-
-func (lc *listCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
-	if err := lc.execute(); err != nil {
-		lc.writer.Errorf("failure: %v", err)
-		return subcommands.ExitFailure
+		list(tax, writer)
+		return babycli.Success
 	}
-
-	return subcommands.ExitSuccess
 }
 
-func (lc *listCmd) execute() error {
-	tax, err := lc.tagLister.ListRepoTags()
-	if err != nil {
-		return err
-	}
-
-	lc.list(tax)
-	return nil
-}
-
-func (lc *listCmd) list(groups tags.Taxonomy) {
-	lc.writer.Tracef("listing tags in git repository")
+func list(groups tags.Taxonomy, writer output.Writer) {
+	writer.Tracef("listing tags in git repository")
 
 	triples := groups.Bases()
 
 	for _, triple := range triples {
 		tagsOfTriple := groups[triple]
 		line := outputLineForTriple(triple, tagsOfTriple)
-		lc.writer.Directf("%s", line)
+		writer.Directf("%s", line)
 	}
 }
 

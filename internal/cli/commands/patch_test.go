@@ -1,134 +1,124 @@
 package commands
 
 import (
-	"context"
 	"errors"
-	"flag"
 	"testing"
 
-	"github.com/google/subcommands"
+	"cattlecloud.net/go/babycli"
 	"github.com/shoenig/semantic"
 	"github.com/shoenig/taggit/internal/tags"
 	"github.com/shoenig/test/must"
 )
 
-func Test_PatchCmd_commandInfo(t *testing.T) {
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
-
-	patchCmd := NewPatchCmd(newKit(mocks))
-
-	name := patchCmd.Name()
-	must.Eq(t, patchCmdName, name)
-
-	synop := patchCmd.Synopsis()
-	must.Eq(t, patchCmdSynopsis, synop)
-
-	usage := patchCmd.Usage()
-	must.Eq(t, patchCmdUsage, usage)
-}
-
-func Test_PatchCmd_Execute_normal(t *testing.T) {
+func Test_patchFunc_normal(t *testing.T) {
 	exp := "taggit: created tag v1.2.4\n"
 
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
+	tk := newTestKit()
 
 	oldTag := semantic.New(1, 2, 3)
 	newTag := semantic.New(1, 2, 4)
 
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		tags.Taxonomy{
-			tags.NewTriple(1, 2, 3): {oldTag},
-		}, nil,
-	)
-	mocks.tagCreator.CreateTagMock.When(newTag).Then(nil)
-	mocks.tagPusher.PushTagMock.When(newTag).Then(nil)
-	patchCmd := NewPatchCmd(newKit(mocks))
+	tk.tagLister.Taxonomy = tags.Taxonomy{
+		tags.NewTriple(1, 2, 3): {oldTag},
+	}
+	tk.tagLister.Err = nil
+	tk.tagCreator.Err = nil
+	tk.tagPusher.Err = nil
 
-	ctx := context.Background()
-	fs := flag.NewFlagSet("testing", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
+	code := runPatchFunc(tk.kit(), "")
 
-	status := patchCmd.Execute(ctx, fs)
-
-	must.Eq(t, subcommands.ExitSuccess, status)
-	must.Eq(t, exp, mocks.stdout.String())
-	must.Eq(t, "", mocks.stderr.String())
+	must.Eq(t, babycli.Success, code)
+	must.Eq(t, exp, tk.stdout.String())
+	must.Eq(t, "", tk.stderr.String())
+	must.Eq(t, newTag, tk.tagCreator.Tag)
+	must.Eq(t, newTag, tk.tagPusher.Tag)
 }
 
-func Test_PatchCmd_Execute_noPrevious(t *testing.T) {
-	exp := `taggit: cannot increment tag because no previous tags exist
-taggit: failure: no previous tags
-`
+func Test_patchFunc_noPrevious(t *testing.T) {
+	exp := "taggit: cannot increment tag because no previous tags exist\n"
 
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
+	tk := newTestKit()
 
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		tags.Taxonomy(nil), nil, // no tags, no error
-	)
+	tk.tagLister.Taxonomy = nil
+	tk.tagLister.Err = nil
 
-	patchCmd := NewPatchCmd(newKit(mocks))
+	code := runPatchFunc(tk.kit(), "")
 
-	ctx := context.Background()
-	fs := flag.NewFlagSet("testing", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
-
-	status := patchCmd.Execute(ctx, fs)
-	must.Eq(t, subcommands.ExitFailure, status)
-	must.Eq(t, "", mocks.stdout.String())
-	must.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, babycli.Failure, code)
+	must.Eq(t, "", tk.stdout.String())
+	must.Eq(t, exp, tk.stderr.String())
 }
 
-func Test_PatchCmd_Execute_listErr(t *testing.T) {
+func Test_patchFunc_listErr(t *testing.T) {
 	exp := "taggit: failure: some git error\n"
 
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
+	tk := newTestKit()
 
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		tags.Taxonomy(nil), errors.New("some git error"),
-	)
+	tk.tagLister.Taxonomy = nil
+	tk.tagLister.Err = errors.New("some git error")
 
-	patchCmd := NewPatchCmd(newKit(mocks))
+	code := runPatchFunc(tk.kit(), "")
 
-	ctx := context.Background()
-	fs := flag.NewFlagSet("testing", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
-
-	status := patchCmd.Execute(ctx, fs)
-	must.Eq(t, subcommands.ExitFailure, status)
-	must.Eq(t, "", mocks.stdout.String())
-	must.Eq(t, exp, mocks.stderr.String())
+	must.Eq(t, babycli.Failure, code)
+	must.Eq(t, "", tk.stdout.String())
+	must.Eq(t, exp, tk.stderr.String())
 }
 
-func Test_PatchCmd_Execute_creatorErr(t *testing.T) {
+func Test_patchFunc_creatorErr(t *testing.T) {
 	exp := "taggit: failure: some create error\n"
 
-	mocks := newMocks(t)
-	defer mocks.assertions(t)
+	tk := newTestKit()
 
-	mocks.tagLister.ListRepoTagsMock.Expect().Return(
-		tags.Taxonomy{
-			tags.NewTriple(1, 2, 3): {semantic.New(1, 2, 3)},
-		}, nil,
+	tk.tagLister.Taxonomy = tags.Taxonomy{
+		tags.NewTriple(1, 2, 3): {semantic.New(1, 2, 3)},
+	}
+	tk.tagLister.Err = nil
+	tk.tagCreator.Err = errors.New("some create error")
+	tk.tagPusher.Err = nil
+
+	code := runPatchFunc(tk.kit(), "")
+
+	must.Eq(t, babycli.Failure, code)
+	must.Eq(t, "", tk.stdout.String())
+	must.Eq(t, exp, tk.stderr.String())
+}
+
+func runPatchFunc(kit *Kit, meta string) babycli.Code {
+	writer := kit.writer
+	tagLister := kit.tagLister
+	tagCreator := kit.tagCreator
+	tagPusher := kit.tagPusher
+
+	ext := tags.ExtractExtensions(meta, nil)
+	writer.Tracef(
+		"increment patch version, pre-release: %q, build-metadata: %q",
+		ext.PreRelease, ext.BuildMetaData,
 	)
 
-	mocks.tagCreator.CreateTagMock.Expect(
-		semantic.New(1, 2, 4),
-	).Return(
-		errors.New("some create error"),
-	)
+	tax, err := tagLister.ListRepoTags()
+	if err != nil {
+		writer.Errorf("failure: %v", err)
+		return babycli.Failure
+	}
 
-	patchCmd := NewPatchCmd(newKit(mocks))
+	if exists := tags.HasPrevious(tax); !exists {
+		writer.Errorf("cannot increment tag because no previous tags exist")
+		return babycli.Failure
+	}
 
-	ctx := context.Background()
-	fs := flag.NewFlagSet("testing", flag.PanicOnError)
-	_ = fs.String("meta", "", "usage")
+	latest := tax.Latest()
+	next := tags.IncPatch(latest, ext)
 
-	status := patchCmd.Execute(ctx, fs)
-	must.Eq(t, subcommands.ExitFailure, status)
-	must.Eq(t, "", mocks.stdout.String())
-	must.Eq(t, exp, mocks.stderr.String())
+	if err := tagCreator.CreateTag(next); err != nil {
+		writer.Errorf("failure: %v", err)
+		return babycli.Failure
+	}
+
+	if err := tagPusher.PushTag(next); err != nil {
+		writer.Errorf("failure: %v", err)
+		return babycli.Failure
+	}
+
+	writer.Writef("created tag %s", next)
+	return babycli.Success
 }
