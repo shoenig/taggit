@@ -45,11 +45,10 @@ func (zc *zeroCmd) Usage() string {
 	return zeroCmdUsage
 }
 
-func (zc *zeroCmd) SetFlags(fs *flag.FlagSet) {
-	// no build metadata when creating v0.0.0
+func (zc *zeroCmd) SetFlags(_ *flag.FlagSet) {
 }
 
-func (zc *zeroCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+func (zc *zeroCmd) Execute(_ context.Context, _ *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	if err := zc.execute(); err != nil {
 		zc.writer.Errorf("failure: %v", err)
 		return subcommands.ExitFailure

@@ -7,25 +7,6 @@ import (
 	"github.com/shoenig/test/must"
 )
 
-const sampleTags = `
-deploy/2017-03-17
-deploy/2017-05-12
-deploy/2017-10-12_09-05-04
-deploy/2017-10-12_09-53-03
-deploy/2017-10-12_10-42-32
-v0.0.0
-v0.0.1
-v0.0.1-alpha
-v0.0.1-alpha2
-v0.0.5
-v0.0.6
-v1.0.0
-v1.0.0-rc1
-v1.1.0
-v1.1.1
-0.0.3
-`
-
 func Test_Taxonomy_Add(t *testing.T) {
 	tax := Taxonomy{
 		NewTriple(1, 2, 3): Tags{

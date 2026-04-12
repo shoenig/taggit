@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -28,8 +27,7 @@ func CleanupT(t *testing.T, r *git5.Repository) {
 }
 
 func CreateT(t *testing.T, tags []string) *git5.Repository {
-	dir, err := ioutil.TempDir("", "taggit-")
-	must.NoError(t, err)
+	dir := t.TempDir()
 
 	r, err := git5.PlainInit(dir, false)
 	must.NoError(t, err)
