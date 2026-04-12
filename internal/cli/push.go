@@ -10,8 +10,6 @@ import (
 	"github.com/shoenig/semantic"
 )
 
-//go:generate go run github.com/gojuno/minimock/v3/cmd/minimock -g -i TagPusher -s _mock.go
-
 // A TagPusher is used to push tags to a remote.
 type TagPusher interface {
 	// PushTag pushes the given tag to the default remote.
