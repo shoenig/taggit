@@ -12,22 +12,17 @@ import (
 )
 
 func Invoke(args []string) babycli.Code {
-	writer := output.NewWriter(os.Stdout, os.Stderr)
-
 	repository, err := git5.PlainOpen(".")
 	if err != nil {
-		writer.Errorf("unable to open repository: %v", err)
+		fmt.Fprintf(os.Stderr, "unable to open repository: %v", err)
 		return babycli.Failure
 	}
 
-	tagLister := cli.NewTagLister(repository)
-	tagCreator := cli.NewTagCreator(repository)
-	tagPusher := cli.NewTagPusher(repository)
 	kit := NewKit(
-		writer,
-		tagLister,
-		tagCreator,
-		tagPusher,
+		output.NewWriter(os.Stdout, os.Stderr),
+		cli.NewTagLister(repository),
+		cli.NewTagCreator(repository),
+		cli.NewTagPusher(repository),
 	)
 
 	return babycli.New(&babycli.Configuration{
@@ -44,10 +39,9 @@ func Invoke(args []string) babycli.Code {
 		Top: &babycli.Component{
 			Name:        "taggit",
 			Description: "Publish new versions of Go modules.",
-			Function: func(cmd *babycli.Component) babycli.Code {
-				if cmd.GetBool("version") {
+			Function: func(c *babycli.Component) babycli.Code {
+				if c.GetBool("version") {
 					fmt.Println(version.Version)
-					return babycli.Success
 				}
 				return babycli.Success
 			},
