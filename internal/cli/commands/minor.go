@@ -15,7 +15,13 @@ func newMinorCommand(kit *Kit) *babycli.Component {
 				Type:  babycli.StringFlag,
 				Long:  "meta",
 				Short: "m",
-				Help:  "build metadata label",
+				Help:  "include build +metadata label",
+			},
+			{
+				Type:  babycli.BooleanFlag,
+				Long:  "dry",
+				Short: "y",
+				Help:  "dry-run without making changes",
 			},
 		},
 		Function: minorFunc(kit),
@@ -50,6 +56,11 @@ func minorFunc(kit *Kit) babycli.Func {
 
 		latest := groups.Latest()
 		next := tags.IncMinor(latest, ext)
+
+		if cmd.GetBool("dry") {
+			writer.Writef("would create tag %s", next)
+			return babycli.Success
+		}
 
 		if err := tagCreator.CreateTag(next); err != nil {
 			writer.Errorf("failure: %v", err)
