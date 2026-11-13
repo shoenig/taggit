@@ -28,23 +28,9 @@ func Invoke(args []string) babycli.Code {
 	return babycli.New(&babycli.Configuration{
 		Arguments: args,
 		Version:   version.Version,
-		Globals: babycli.Flags{
-			{
-				Type:  babycli.BooleanFlag,
-				Long:  "version",
-				Short: "v",
-				Help:  "print version information",
-			},
-		},
 		Top: &babycli.Component{
 			Name:        "taggit",
 			Description: "Publish new versions of Go modules.",
-			Function: func(c *babycli.Component) babycli.Code {
-				if c.GetBool("version") {
-					fmt.Println(version.Version)
-				}
-				return babycli.Success
-			},
 			Components: babycli.Components{
 				newListCommand(kit),
 				newZeroCommand(kit),
