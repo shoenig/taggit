@@ -18,6 +18,28 @@ new version tags at patch, minor, and major levels.
 go install github.com/shoenig/taggit@latest
 ```
 
+#### SSH Agent Setup
+
+`taggit` pushes tags using [go-git](https://github.com/go-git/go-git), which
+authenticates over SSH using your running SSH agent only. It does not read
+`~/.ssh/config`, `IdentityFile`, or prompt for key passphrases. Make sure the
+key for the remote is loaded into the agent before pushing:
+
+```shell
+ssh-add ~/.ssh/id_ed25519
+```
+
+Confirm the key is present with `ssh-add -l`:
+
+```shell
+$ ssh-add -l
+256 SHA256:AviRN8VosTfD1h5XAJ9KbGGGvQ0U7LAG7875kP2XbzB /Users/you/.ssh/id_ed25519 (ED25519)
+```
+
+If `ssh-add -l` reports `The agent has no identities`, the key is not loaded.
+Note that a successful `ssh -T git@github.com` is not sufficient as OpenSSH can
+fall back to key files on its own, but go-git cannot.
+
 ## Commands
 
 The `taggit` command line tool provides commands for managing version tags.
